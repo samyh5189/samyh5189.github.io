@@ -262,10 +262,10 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     document.getElementById('creatorChannelBtn').addEventListener('click', () => {
-        window.open('https://telegram.me/mSamyhu', '_blank');
+        window.open('https://telegram.me/hamsterarff', '_blank');
     });
 
     telegramChannelBtn.addEventListener('click', () => {
-        window.open('https://telegram.me/hamsterarff', '_blank');
+        window.open('https://telegram.me/mSamyhu', '_blank');
     });
 });
