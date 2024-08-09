@@ -15,6 +15,7 @@
             padding: 0;
             position: relative;
             overflow: hidden; /* Prevents scrollbars from showing due to the background letter */
+            line-height: 1.6; /* Improves readability */
         }
 
         .container {
@@ -24,7 +25,7 @@
             background-color: #fff;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             border-radius: 10px;
-            position: relative; /* Ensures the ad container and content are above the background letter */
+            position: relative;
             z-index: 1;
         }
 
@@ -135,6 +136,7 @@
             font-weight: bold;
             z-index: 0;
             pointer-events: none; /* Prevents interference with clicks */
+            white-space: nowrap; /* Ensures the letter doesn't break */
         }
     </style>
 </head>
