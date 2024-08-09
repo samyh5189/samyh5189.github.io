@@ -1,125 +1,101 @@
+/* General Styles */
 body {
+    background-color: #000; /* Set background to black */
+    color: #fff; /* Set text color to white for readability */
     font-family: Arial, sans-serif;
-    background-color: #f0f0f0;
-    color: #333;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
     margin: 0;
+    padding: 0;
 }
 
 .container {
-    background: #fff;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    width: 90%;
+    max-width: 600px;
+    margin: 0 auto;
     padding: 20px;
-    max-width: 500px;
-    width: 100%;
     text-align: center;
 }
 
 h1 {
-    margin-bottom: 20px;
+    margin-bottom: 30px;
 }
 
 .form-group {
-    margin-bottom: 15px;
+    margin-bottom: 20px;
 }
 
 label {
     display: block;
     margin-bottom: 5px;
-    font-weight: bold;
+    font-size: 18px;
 }
 
 select {
     width: 100%;
     padding: 10px;
-    font-size: 14px;
-    margin-bottom: 15px;
+    font-size: 16px;
 }
 
 button {
-    background-color: #007bff;
-    color: white;
-    border: none;
     padding: 10px 20px;
-    font-size: 14px;
-    border-radius: 5px;
+    font-size: 16px;
+    margin-top: 10px;
     cursor: pointer;
+    background-color: #1e90ff;
+    border: none;
+    color: #fff;
+    border-radius: 5px;
 }
 
-
-
 button:hover {
-    background-color: #0056b3;
+    background-color: #0b75d1;
 }
 
 .hidden {
     display: none;
 }
 
-.progress-bar {
-    background-color: #f0f0f0;
-    border-radius: 5px;
-    overflow: hidden;
-    margin-top: 20px;
-    height: 30px;
-    position: relative;
+#progressContainer {
+    margin-top: 30px;
 }
 
-.progress-bar div {
-    height: 100%;
-    background-color: #007bff;
-    width: 0;
-    transition: width 0.5s;
+#loadingGif {
+    width: 100px;
+    height: 100px;
 }
 
 #progressText {
     margin-top: 10px;
-    font-weight: bold;
+    font-size: 18px;
 }
 
-.key-item {
-    display: flex;
-    align-items: center;
+#progressLog {
+    margin-top: 5px;
+    font-size: 14px;
+    font-style: italic;
+}
+
+#keyContainer {
+    margin-top: 30px;
+}
+
+#keysList {
     margin-top: 10px;
-}
-
-.key-item input {
-    flex: 1;
-    padding: 10px;
-    font-size: 14px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    margin-right: 10px;
-}
-
-.copyKeyBtn {
-    background-color: #28a745;
-    border: none;
-    padding: 10px 20px;
-    color: white;
-    font-size: 14px;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-.copyKeyBtn:hover {
-    background-color: #218838;
-}
-
-.footer {
-    margin-top: 20px;
-    font-size: 14px;
+    text-align: left;
+    padding: 0 20px;
+    word-wrap: break-word;
 }
 
 #copyStatus {
     margin-top: 10px;
-    color: green;
+    color: #32cd32;
+    font-weight: bold;
 }
 
-#telegramChannelBtn{
-    background-color: green;
+.footer {
+    margin-top: 50px;
+}
+
+.footer p {
+    margin-bottom: 10px;
+    font-size: 16px;
 }
