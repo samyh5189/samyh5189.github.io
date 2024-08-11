@@ -14,7 +14,7 @@ body {
     max-width: 600px; /* Adjust as needed */
     margin: 20px auto;
     position: relative;
-    padding-top: 56.25%; /* Aspect Ratio for 16:9 portrait */
+    padding-top: 60.25%; /* Aspect Ratio for 16:9 portrait */
 }
 
 .video-frame {
