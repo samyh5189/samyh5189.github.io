@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     const EVENTS_DELAY = 20000;
-    const MAX_KEYS_PER_GAME_PER_DAY = 50000;
+    const MAX_KEYS_PER_GAME_PER_DAY = 400;
 
     const games = {
         1: {
@@ -38,6 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const generatedKeysTitle = document.getElementById('generatedKeysTitle');
     const gameSelect = document.getElementById('gameSelect');
     const copyStatus = document.getElementById('copyStatus');
+    const telegramChannelBtn = document.getElementById('telegramChannelBtn');
 
     const initializeLocalStorage = () => {
         const now = new Date().toISOString().split('T')[0];
@@ -141,66 +142,124 @@ document.addEventListener('DOMContentLoaded', () => {
         const storedData = JSON.parse(localStorage.getItem(storageKey));
 
         if (storedData.count + keyCount > MAX_KEYS_PER_GAME_PER_DAY) {
-            alert(`You can generate only ${MAX_KEYS_PER_GAME_PER_DAY - storedData.count} more keys for ${game.name} today.`);
+            alert(`You can generate only ${MAX_KEYS_PER_GAME_PER_DAY - storedData.count} more keys for ${game.name} today. Please contact 9799744 for more keys.`);
             return;
         }
 
-        keyContainer.classList.add('hidden');
+        keyCountLabel.innerText = `Number of keys: ${keyCount}`;
+
+        progressBar.style.width = '0%';
+        progressText.innerText = '0%';
+        progressLog.innerText = 'Starting...';
         progressContainer.classList.remove('hidden');
-        progressText.textContent = '0%';
-        progressLog.textContent = 'Generating keys...';
+        keyContainer.classList.add('hidden');
+        generatedKeysTitle.classList.add('hidden');
+        keysList.innerHTML = '';
+        keyCountSelect.classList.add('hidden');
+        gameSelect.classList.add('hidden');
+        startBtn.classList.add('hidden');
+        copyAllBtn.classList.add('hidden');
+        startBtn.disabled = true;
 
-        try {
+        let progress = 0;
+        const updateProgress = (increment, message) => {
+            progress += increment;
+            progressBar.style.width = `${progress}%`;
+            progressText.innerText = `${progress}%`;
+            progressLog.innerText = message;
+        };
+
+        const generateKeyProcess = async () => {
             const clientId = generateClientId();
-            const clientToken = await login(clientId, game.appToken);
-
-            let progress = 0;
-
-            for (let i = 0; i < keyCount; i++) {
-                await sleep(EVENTS_DELAY * delayRandom());
-
-                const hasCode = await emulateProgress(clientToken, game.promoId);
-
-                if (!hasCode) {
-                    progressLog.textContent = 'Failed to register event.';
-                    continue;
-                }
-
-                const key = await generateKey(clientToken, game.promoId);
-
-                const keyElement = document.createElement('div');
-                keyElement.textContent = key;
-                keysList.appendChild(keyElement);
-                generatedKeysTitle.classList.remove('hidden');
-                copyAllBtn.classList.remove('hidden');
-
-                storedData.count += 1;
-                localStorage.setItem(storageKey, JSON.stringify(storedData));
-
-                progress = Math.floor(((i + 1) / keyCount) * 100);
-                progressBar.style.width = `${progress}%`;
-                progressText.textContent = `${progress}%`;
+            let clientToken;
+            try {
+                clientToken = await login(clientId, game.appToken);
+            } catch (error) {
+                alert(`Failed to login: ${error.message}`);
+                startBtn.disabled = false;
+                return null;
             }
 
-            progressLog.textContent = 'Keys generated successfully!';
-        } catch (error) {
-            progressLog.textContent = `Error: ${error.message}`;
-        } finally {
-            keyContainer.classList.remove('hidden');
-            progressContainer.classList.add('hidden');
-        }
-    });
+            for (let i = 0; i < 11; i++) {
+                await sleep(EVENTS_DELAY * delayRandom());
+                const hasCode = await emulateProgress(clientToken, game.promoId);
+                updateProgress(7 / keyCount, 'Mioh balany...');
+                if (hasCode) {
+                    break;
+                }
+            }
 
-    copyAllBtn.addEventListener('click', () => {
-        const keys = Array.from(keysList.children).map(div => div.textContent).join('\n');
-        navigator.clipboard.writeText(keys).then(() => {
-            copyStatus.classList.remove('hidden');
-            setTimeout(() => copyStatus.classList.add('hidden'), 2000);
+            try {
+                const key = await generateKey(clientToken, game.promoId);
+                updateProgress(30 / keyCount, 'KaloAa Athuvejje...');
+                return key;
+            } catch (error) {
+                alert(`Failed to generate key: ${error.message}`);
+                return null;
+            }
+        };
+
+        const keys = await Promise.all(Array.from({ length: keyCount }, generateKeyProcess));
+
+        if (keys.length > 1) {
+            keysList.innerHTML = keys.filter(key => key).map(key =>
+                `<div class="key-item">
+                    <input type="text" value="${key}" readonly>
+                    <button class="copyKeyBtn" data-key="${key}">Copy Key</button>
+                </div>`
+            ).join('');
+            copyAllBtn.classList.remove('hidden');
+        } else if (keys.length === 1) {
+            keysList.innerHTML =
+                `<div class="key-item">
+                    <input type="text" value="${keys[0]}" readonly>
+                    <button class="copyKeyBtn" data-key="${keys[0]}">Copy Key</button>
+                </div>`;
+        }
+
+        storedData.count += keyCount;
+        localStorage.setItem(storageKey, JSON.stringify(storedData));
+
+        keyContainer.classList.remove('hidden');
+        generatedKeysTitle.classList.remove('hidden');
+        document.querySelectorAll('.copyKeyBtn').forEach(button => {
+            button.addEventListener('click', (event) => {
+                const key = event.target.getAttribute('data-key');
+                navigator.clipboard.writeText(key).then(() => {
+                    copyStatus.classList.remove('hidden');
+                    setTimeout(() => copyStatus.classList.add('hidden'), 2000);
+                });
+            });
         });
+        copyAllBtn.addEventListener('click', () => {
+            const keysText = keys.filter(key => key).join('\n');
+            navigator.clipboard.writeText(keysText).then(() => {
+                copyStatus.classList.remove('hidden');
+                setTimeout(() => copyStatus.classList.add('hidden'), 2000);
+            });
+        });
+
+        progressBar.style.width = '100%';
+        progressText.innerText = '100%';
+        progressLog.innerText = 'Complete';
+
+        startBtn.classList.remove('hidden');
+        keyCountSelect.classList.remove('hidden');
+        gameSelect.classList.remove('hidden');
+        startBtn.disabled = false;
     });
 
     document.getElementById('generateMoreBtn').addEventListener('click', () => {
-        keyContainer.classList.add('hidden');
         progressContainer.classList.add('hidden');
+        keyContainer.classList.add('hidden');
+        startBtn.classList.remove('hidden');
+        keyCountSelect.classList.remove('hidden');
+        gameSelect.classList.remove('hidden');
+        generatedKeysTitle.classList.add('hidden');
+        copyAllBtn.classList.add('hidden');
+        keysList.innerHTML = '';
+        keyCountLabel.innerText = 'Number of keys:';
     });
+
+   
 });
