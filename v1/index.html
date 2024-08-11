@@ -8,9 +8,12 @@
 </head>
 <body>
     <div class="container">
-        <h1>Samyh</h1>
+        <h1 style="font-size: 1em; color: #333; background: linear-gradient(90deg, #1a73e8 0%, #ff7e5f 100%); color: white; padding: 10px 20px; border-radius: 10px; box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1); text-align: center;">
+    Samyh
+</h1>
+
         <div class="form-group">
-            <label for="gameSelect">Select Game:</label>
+            <label for="gameSelect">Select Game</label>
             <select id="gameSelect">
                 <option value="1">Riding Extreme 3D</option>
                 <option value="2">Chain Cube 2048</option>
@@ -19,40 +22,60 @@
             </select>
         </div>
         <div class="form-group">
-            <label for="keyCountSelect">Select Number of Keys:</label>
+            <label id="keyCountLabel" for="keyCountSelect">Number of keys:</label>
             <select id="keyCountSelect">
+                <option value="1">1</option>
                 <option value="2">2</option>
-                <option value="5">5</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
             </select>
         </div>
         <button id="startBtn">Generate Keys</button>
-
         <div id="progressContainer" class="hidden">
             <div class="progress-bar">
                 <div id="progressBar"></div>
             </div>
-            <p id="progressText">0%</p>
-            <p id="progressLog">Aaan Hureyy...</p>
+            <div id="progressText">0%</div>
+            <div id="progressLog">Miulheny Thikamaa...</div>
         </div>
-
         <div id="keyContainer" class="hidden">
-            <h2 id="generatedKeysTitle" class="hidden">Generated Keys</h2>
+            <h3 id="generatedKeysTitle" class="hidden">Generated Keys:</h3>
             <div id="keysList"></div>
             <button id="copyAllBtn" class="hidden">Copy All Keys</button>
+            <div id="copyStatus" class="hidden">Copied!</div>
+            <button id="generateMoreBtn">Generate More Keys</button>
+        </div>
+                <!-- YouTube Video Embed -->
+        <div class="video-container">
+            <h2>Watch This Video</h2>
+            <iframe width="98%" height="100%" src="https://www.youtube.com/embed/pVIL9AvGWmY" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
         </div>
 
-        <p id="keyCountLabel">Number of keys:</p>
-
-        <button id="generateMoreBtn">Generate More Keys</button>
-        <button id="creatorChannelBtn">Contact Creator</button>
-        <p id="copyStatus" class="hidden">Keys copied to clipboard!</p>
         
         <div class="footer">
-            <p>- Mohamed Samyh -</p>
-            <button id="telegramChannelBtn">Check out Our Telegram Channel</button>
+            <h1 style="font-size: 1em; text-align: center; font-family: 'Poppins', sans-serif; animation: fadeIn 5s ease-in-out; background: linear-gradient(90deg, #1a73e8, #ff7e5f); -webkit-background-clip: text; color: transparent;">
+    © Mohamed Samyh
+</h1>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap');
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+</style>
+
+            <button id="telegramChannelBtn">Contact Creator</button> <br><br>
+            <button id="creatorChannelBtn">Telegram Channel</button>
         </div>
     </div>
-
     <script src="script.js"></script>
 </body>
 </html>
