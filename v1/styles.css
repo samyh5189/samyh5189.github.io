@@ -8,6 +8,23 @@ body {
     height: 100vh;
     margin: 0;
 }
+.video-container {
+    margin-top: 20px;
+    text-align: center;
+    max-width: 600px; /* Adjust as needed */
+    margin: 20px auto;
+    position: relative;
+    padding-top: 56.25%; /* Aspect Ratio for 16:9 portrait */
+}
+
+.video-frame {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+}
 
 .container {
     background: #fff;
