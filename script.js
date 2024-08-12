@@ -38,8 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const generatedKeysTitle = document.getElementById('generatedKeysTitle');
     const gameSelect = document.getElementById('gameSelect');
     const copyStatus = document.getElementById('copyStatus');
-    const messageContainer = document.getElementById('messageContainer');
-    const messageText = document.getElementById('messageText');
+    const telegramChannelBtn = document.getElementById('telegramChannelBtn');
 
     const initializeLocalStorage = () => {
         const now = new Date().toISOString().split('T')[0];
@@ -132,20 +131,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const delayRandom = () => Math.random() / 3 + 1;
 
-    const resetUI = () => {
-        progressContainer.classList.add('hidden');
-        keyContainer.classList.add('hidden');
-        generatedKeysTitle.classList.add('hidden');
-        copyAllBtn.classList.add('hidden');
-        keysList.innerHTML = '';
-        keyCountSelect.classList.remove('hidden');
-        gameSelect.classList.remove('hidden');
-        startBtn.classList.remove('hidden');
-        startBtn.disabled = false;
-        keyCountLabel.innerText = 'Number of keys:';
-        messageContainer.classList.add('hidden');
-    };
-
     initializeLocalStorage();
 
     startBtn.addEventListener('click', async () => {
@@ -157,12 +142,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const storedData = JSON.parse(localStorage.getItem(storageKey));
 
         if (storedData.count + keyCount > MAX_KEYS_PER_GAME_PER_DAY) {
-            messageContainer.classList.remove('hidden');
-            messageText.innerText = `You have reached you free plan limit for ${game.name} today.`;
-            startBtn.disabled = false;
+            alert(`You can generate only ${MAX_KEYS_PER_GAME_PER_DAY - storedData.count} more keys for ${game.name} today. Please contact 9799744 for more keys.`);
             return;
-        } else {
-            messageContainer.classList.add('hidden');
         }
 
         keyCountLabel.innerText = `Number of keys: ${keyCount}`;
@@ -194,8 +175,7 @@ document.addEventListener('DOMContentLoaded', () => {
             try {
                 clientToken = await login(clientId, game.appToken);
             } catch (error) {
-                messageContainer.classList.remove('hidden');
-                messageText.innerText = `Failed to login: ${error.message}`;
+                alert(`Failed to login: ${error.message}`);
                 startBtn.disabled = false;
                 return null;
             }
@@ -214,8 +194,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 updateProgress(30 / keyCount, 'Generating Key...');
                 return key;
             } catch (error) {
-                messageContainer.classList.remove('hidden');
-                messageText.innerText = `Failed to generate key: ${error.message}`;
+                alert(`Failed to generate key: ${error.message}`);
                 return null;
             }
         };
@@ -264,10 +243,23 @@ document.addEventListener('DOMContentLoaded', () => {
         progressText.innerText = '100%';
         progressLog.innerText = 'Complete';
 
-        resetUI();
+        startBtn.classList.remove('hidden');
+        keyCountSelect.classList.remove('hidden');
+        gameSelect.classList.remove('hidden');
+        startBtn.disabled = false;
     });
 
     document.getElementById('generateMoreBtn').addEventListener('click', () => {
-        resetUI();
+        progressContainer.classList.add('hidden');
+        keyContainer.classList.add('hidden');
+        startBtn.classList.remove('hidden');
+        keyCountSelect.classList.remove('hidden');
+        gameSelect.classList.remove('hidden');
+        generatedKeysTitle.classList.add('hidden');
+        copyAllBtn.classList.add('hidden');
+        keysList.innerHTML = '';
+        keyCountLabel.innerText = 'Number of keys:';
     });
+
+   
 });
