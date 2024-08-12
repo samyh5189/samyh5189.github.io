@@ -132,6 +132,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const delayRandom = () => Math.random() / 3 + 1;
 
+    const resetUI = () => {
+        progressContainer.classList.add('hidden');
+        keyContainer.classList.add('hidden');
+        generatedKeysTitle.classList.add('hidden');
+        copyAllBtn.classList.add('hidden');
+        keysList.innerHTML = '';
+        keyCountSelect.classList.remove('hidden');
+        gameSelect.classList.remove('hidden');
+        startBtn.classList.remove('hidden');
+        startBtn.disabled = false;
+        keyCountLabel.innerText = 'Number of keys:';
+        messageContainer.classList.add('hidden');
+    };
+
     initializeLocalStorage();
 
     startBtn.addEventListener('click', async () => {
@@ -139,14 +153,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const keyCount = parseInt(keyCountSelect.value);
         const game = games[gameChoice];
 
-        console.log(`Selected Game: ${game.name}`); // Debug log
-
         const storageKey = `keys_generated_${game.name}`;
         const storedData = JSON.parse(localStorage.getItem(storageKey));
 
         if (storedData.count + keyCount > MAX_KEYS_PER_GAME_PER_DAY) {
             messageContainer.classList.remove('hidden');
-            messageText.innerText = `Your limit of ${MAX_KEYS_PER_GAME_PER_DAY - storedData.count} keys for ${game.name} reached.`;
+            messageText.innerText = `You have reached you free plan limit for ${game.name} today.`;
+            startBtn.disabled = false;
             return;
         } else {
             messageContainer.classList.add('hidden');
@@ -251,21 +264,10 @@ document.addEventListener('DOMContentLoaded', () => {
         progressText.innerText = '100%';
         progressLog.innerText = 'Complete';
 
-        startBtn.classList.remove('hidden');
-        keyCountSelect.classList.remove('hidden');
-        gameSelect.classList.remove('hidden');
-        startBtn.disabled = false;
+        resetUI();
     });
 
     document.getElementById('generateMoreBtn').addEventListener('click', () => {
-        progressContainer.classList.add('hidden');
-        keyContainer.classList.add('hidden');
-        startBtn.classList.remove('hidden');
-        keyCountSelect.classList.remove('hidden');
-        gameSelect.classList.remove('hidden');
-        generatedKeysTitle.classList.add('hidden');
-        copyAllBtn.classList.add('hidden');
-        keysList.innerHTML = '';
-        keyCountLabel.innerText = 'Number of keys:';
+        resetUI();
     });
 });
