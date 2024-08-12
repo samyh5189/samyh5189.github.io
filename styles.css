@@ -88,10 +88,12 @@ button:active {
 
 .progress-bar div {
     height: 100%;
-    background-color: #888; /* Gray progress bar */
+    background: linear-gradient(90deg, #1a73e8, #ff7e5f); /* Gradient progress bar */
     width: 0;
     transition: width 0.5s;
+    border-radius: 5px 0 0 5px; /* Rounded corner on the left side */
 }
+
 
 #progressText {
     margin-top: 10px;
