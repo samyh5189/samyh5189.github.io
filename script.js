@@ -144,7 +144,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (storedData.count + keyCount > MAX_KEYS_PER_GAME_PER_DAY) {
             messageContainer.classList.remove('hidden');
-            messageText.innerText = `You can generate only ${MAX_KEYS_PER_GAME_PER_DAY - storedData.count} more keys for ${game.name} today.`;
+            messageText.innerText = `Your limit of ${MAX_KEYS_PER_GAME_PER_DAY - storedData.count} keys for ${game.name} reached.`;
             return;
         } else {
             messageContainer.classList.add('hidden');
