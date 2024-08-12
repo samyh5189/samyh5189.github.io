@@ -139,6 +139,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const keyCount = parseInt(keyCountSelect.value);
         const game = games[gameChoice];
 
+        console.log(`Selected Game: ${game.name}`); // Debug log
+
         const storageKey = `keys_generated_${game.name}`;
         const storedData = JSON.parse(localStorage.getItem(storageKey));
 
