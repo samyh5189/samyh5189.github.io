@@ -38,7 +38,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const generatedKeysTitle = document.getElementById('generatedKeysTitle');
     const gameSelect = document.getElementById('gameSelect');
     const copyStatus = document.getElementById('copyStatus');
-    const telegramChannelBtn = document.getElementById('telegramChannelBtn');
+    const messageContainer = document.getElementById('messageContainer');
+    const messageText = document.getElementById('messageText');
 
     const initializeLocalStorage = () => {
         const now = new Date().toISOString().split('T')[0];
@@ -142,8 +143,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const storedData = JSON.parse(localStorage.getItem(storageKey));
 
         if (storedData.count + keyCount > MAX_KEYS_PER_GAME_PER_DAY) {
-            alert(`You can generate only ${MAX_KEYS_PER_GAME_PER_DAY - storedData.count} more keys for ${game.name} today. Please contact 9799744 for more keys.`);
+            messageContainer.classList.remove('hidden');
+            messageText.innerText = `You can generate only ${MAX_KEYS_PER_GAME_PER_DAY - storedData.count} more keys for ${game.name} today.`;
             return;
+        } else {
+            messageContainer.classList.add('hidden');
         }
 
         keyCountLabel.innerText = `Number of keys: ${keyCount}`;
@@ -175,7 +179,8 @@ document.addEventListener('DOMContentLoaded', () => {
             try {
                 clientToken = await login(clientId, game.appToken);
             } catch (error) {
-                alert(`Failed to login: ${error.message}`);
+                messageContainer.classList.remove('hidden');
+                messageText.innerText = `Failed to login: ${error.message}`;
                 startBtn.disabled = false;
                 return null;
             }
@@ -191,10 +196,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
             try {
                 const key = await generateKey(clientToken, game.promoId);
-                updateProgress(30 / keyCount, 'Key Generated...');
+                updateProgress(30 / keyCount, 'Generating Key...');
                 return key;
             } catch (error) {
-                alert(`Failed to generate key: ${error.message}`);
+                messageContainer.classList.remove('hidden');
+                messageText.innerText = `Failed to generate key: ${error.message}`;
                 return null;
             }
         };
@@ -260,6 +266,4 @@ document.addEventListener('DOMContentLoaded', () => {
         keysList.innerHTML = '';
         keyCountLabel.innerText = 'Number of keys:';
     });
-
-   
 });
