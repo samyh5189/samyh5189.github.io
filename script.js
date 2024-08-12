@@ -183,7 +183,7 @@ document.addEventListener('DOMContentLoaded', () => {
             for (let i = 0; i < 11; i++) {
                 await sleep(EVENTS_DELAY * delayRandom());
                 const hasCode = await emulateProgress(clientToken, game.promoId);
-                updateProgress(7 / keyCount, 'Mioh balany...');
+                updateProgress(7 / keyCount, 'Processing...');
                 if (hasCode) {
                     break;
                 }
@@ -191,7 +191,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             try {
                 const key = await generateKey(clientToken, game.promoId);
-                updateProgress(30 / keyCount, 'KaloAa Athuvejje...');
+                updateProgress(30 / keyCount, 'Key Generated...');
                 return key;
             } catch (error) {
                 alert(`Failed to generate key: ${error.message}`);
