@@ -1,6 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
     const EVENTS_DELAY = 18000;
-    const MAX_KEYS_PER_GAME_PER_DAY = 5000;
 
     const games = {
         1: {
@@ -45,12 +44,27 @@ document.addEventListener('DOMContentLoaded', () => {
     const copyStatus = document.getElementById('copyStatus');
     const previousKeysContainer = document.getElementById('previousKeysContainer');
     const previousKeysList = document.getElementById('previousKeysList');
-    const telegramChannelBtn = document.getElementById('telegramChannelBtn');
 
-    const initializeLocalStorage = () => {
+    const getUserMaxKeys = (userId) => {
+        // This function should be implemented to return the max keys allowed for the user
+        // You could use an API call to your backend, or a predefined mapping
+        const userLimits = {
+            '12345': 10000,  // User with ID 12345 can generate 10000 keys
+            '67890': 7500,   // User with ID 67890 can generate 7500 keys
+            'default': 5000  // Default limit for other users
+        };
+        return userLimits[userId] || userLimits['default'];
+    };
+
+    const getUserIdFromUrl = () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get('userId');
+    };
+
+    const initializeLocalStorage = (userId) => {
         const now = new Date().toISOString().split('T')[0];
         Object.values(games).forEach(game => {
-            const storageKey = `keys_generated_${game.name}`;
+            const storageKey = `keys_generated_${game.name}_${userId}`;
             const storedData = JSON.parse(localStorage.getItem(storageKey));
             if (!storedData || storedData.date !== now) {
                 localStorage.setItem(storageKey, JSON.stringify({ date: now, count: 0, keys: [] }));
@@ -138,15 +152,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const delayRandom = () => Math.random() / 3 + 1;
 
-    initializeLocalStorage();
+    const userId = getUserIdFromUrl();
+    initializeLocalStorage(userId);
 
     startBtn.addEventListener('click', async () => {
         const gameChoice = parseInt(gameSelect.value);
         const keyCount = parseInt(keyCountSelect.value);
         const game = games[gameChoice];
 
-        const storageKey = `keys_generated_${game.name}`;
-        const storedData = JSON.parse(localStorage.getItem(storageKey));
+        const MAX_KEYS_PER_GAME_PER_DAY = getUserMaxKeys(userId);
+
+        const storageKey = `keys_generated_${game.name}_${userId}`;
+        let storedData = JSON.parse(localStorage.getItem(storageKey));
+
+        if (!storedData || storedData.date !== new Date().toISOString().split('T')[0]) {
+            storedData = { date: new Date().toISOString().split('T')[0], count: 0, keys: [] };
+            localStorage.setItem(storageKey, JSON.stringify(storedData));
+        }
 
         if (storedData.count + keyCount > MAX_KEYS_PER_GAME_PER_DAY) {
             alert(`You can generate only ${MAX_KEYS_PER_GAME_PER_DAY - storedData.count} more keys for ${game.name} today.`);
@@ -163,7 +185,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         progressBar.style.width = '0%';
         progressText.innerText = '0%';
-        progressLog.innerText = 'Starting... \n Please wait It may take upto 1 min to Login';
+        progressLog.innerText = 'Starting... \n Please wait It may take up to 1 min to Login';
         progressContainer.classList.remove('hidden');
         keyContainer.classList.add('hidden');
         generatedKeysTitle.classList.add('hidden');
@@ -222,7 +244,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>`
             ).join('');
             copyAllBtn.classList.remove('hidden');
-        } else if (keys.length === 1) {
+        } else if (keys.length === 1 && keys[0]) {
             keysList.innerHTML =
                 `<div class="key-item">
                     <input type="text" value="${keys[0]}" readonly>
@@ -267,6 +289,4 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error('Could not copy text: ', err);
         });
     });
-
-   
 });
