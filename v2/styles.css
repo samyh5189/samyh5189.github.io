@@ -1,0 +1,182 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #e0e0e0; /* Lighter gray background */
+    color: #333;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+
+.container {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    max-width: 500px;
+    width: 100%;
+    text-align: center;
+}
+
+h1 {
+    margin-bottom: 20px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+select, input[type="text"] {
+    width: 100%;
+    padding: 12px;
+    font-size: 14px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #f9f9f9; /* Slightly lighter gray for inputs */
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: border-color 0.3s ease;
+}
+
+select:focus, input[type="text"]:focus {
+    border-color: #888; /* Darker border on focus */
+    outline: none;
+}
+
+button {
+    background-color: #888; /* Gray button */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 14px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #666; /* Darker gray on hover */
+}
+
+.hidden {
+    display: none;
+}
+
+.progress-bar {
+    background-color: #e0e0e0;
+    border-radius: 5px;
+    overflow: hidden;
+    margin-top: 20px;
+    height: 35px; /* Increased height */
+    position: relative;
+    box-shadow: inset 0px 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.progress-bar div {
+    height: 100%;
+    background: linear-gradient(90deg, #1a73e8, #ff7e5f);
+    width: 0;
+    transition: width 0.8s ease-in-out;
+    border-radius: 5px 0 0 5px;
+    position: relative;
+    overflow: hidden;
+    text-align: center;
+    line-height: 35px; /* Match the height */
+    font-weight: bold;
+    color: white;
+}
+
+.progress-bar div::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.2), rgba(0, 0, 0, 0.2));
+    mix-blend-mode: overlay;
+    pointer-events: none;
+}
+
+.progress-bar div span {
+    position: absolute;
+    width: 100%;
+    left: 0;
+    top: 0;
+}
+
+.progress-bar:hover div {
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.3);
+}
+
+
+.key-item {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.key-item input {
+    flex: 1;
+    padding: 12px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #f9f9f9; /* Match the text box style */
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-right: 10px;
+    transition: border-color 0.3s ease;
+}
+
+.key-item input:focus {
+    border-color: #888; /* Darker border on focus */
+    outline: none;
+}
+
+.copyKeyBtn {
+    background-color: #888; /* Gray copy button */
+    border: none;
+    padding: 10px 20px;
+    color: white;
+    font-size: 14px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.copyKeyBtn:hover {
+    background-color: #666; /* Darker gray on hover */
+}
+
+.footer {
+    margin-top: 20px;
+    font-size: 14px;
+}
+
+#copyStatus {
+    margin-top: 10px;
+    color: green;
+}
+
+#telegramChannelBtn {
+    background-color: #888; /* Gray Telegram button */
+    color: white;
+    padding: 10px 20px;
+    font-size: 14px;
+    border-radius: 5px;
+    cursor: pointer;
+    border: none;
+    transition: background-color 0.3s ease;
+}
+
+#telegramChannelBtn:hover {
+    background-color: #666; /* Darker gray on hover */
+}
