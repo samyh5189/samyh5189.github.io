@@ -11,7 +11,6 @@
         <h1 style="font-size: 1em; color: #333; background: linear-gradient(90deg, #1a73e8 0%, #ff7e5f 100%); color: white; padding: 10px 20px; border-radius: 10px; box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1); text-align: center;">
             Samyh
         </h1>
-
         <div class="form-group">
             <label for="gameSelect">Select Game</label>
             <select id="gameSelect">
@@ -19,7 +18,7 @@
                 <option value="2">Chain Cube 2048</option>
                 <option value="3">My Clone Army</option>
                 <option value="4">Train Miner</option>
-                 <option value="5">MergeAway (NEW)</option>
+                <option value="5">MergeAway (NEW)</option>
             </select>
         </div>
         <div class="form-group">
@@ -44,7 +43,10 @@
             <div id="keysList"></div>
             <button id="copyAllBtn" class="hidden">Copy All Keys</button>
             <div id="copyStatus" class="hidden">Copied!</div>
-            <button id="generateMoreBtn">Generate More Keys</button>
+        </div>
+        <div id="previousKeysContainer" class="hidden">
+            <h3>Previously Generated Keys:</h3>
+            <div id="previousKeysList"></div>
         </div>
         <!-- YouTube Video Embed -->
         <div class="video-container">
@@ -53,7 +55,6 @@
 </h1>
             <iframe width="98%" height="100%" src="https://www.youtube.com/embed/vs-Oix9KETI" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
         </div>
-
         <div class="footer">
             <h1 style="font-size: 1em; text-align: center; font-family: 'Poppins', sans-serif; animation: fadeIn 5s ease-in-out; background: linear-gradient(90deg, #1a73e8, #ff7e5f); -webkit-background-clip: text; color: transparent;">
                 © Mohamed Samyh
