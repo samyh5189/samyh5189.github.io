@@ -5,12 +5,35 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Samyh</title>
     <link rel="stylesheet" href="styles.css">
+    <style>
+        @keyframes gradientShift {
+            0% { stop-color: #1a73e8; }
+            50% { stop-color: #ff7e5f; }
+            100% { stop-color: #1a73e8; }
+        }
+        .logo-gradient stop {
+            animation: gradientShift 8s infinite;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
-        <h1 style="font-size: 1em; color: #333; background: linear-gradient(90deg, #1a73e8 0%, #ff7e5f 100%); color: white; padding: 10px 20px; border-radius: 10px; box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1); text-align: center;">
-            Samyh
-        </h1>
+        <div class="logo-container">
+            <svg width="100" height="100" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <linearGradient id="logo-gradient" x1="0%" y1="0%" x2="100%" y2="100%" class="logo-gradient">
+                        <stop offset="0%" stop-color="#1a73e8" />
+                        <stop offset="100%" stop-color="#ff7e5f" />
+                    </linearGradient>
+                </defs>
+                <path d="M30 20C30 20 70 20 70 50C70 80 30 80 30 80" stroke="url(#logo-gradient)" stroke-width="12" stroke-linecap="round" stroke-linejoin="round">
+                    <animate attributeName="d" dur="1s" repeatCount="1"
+                        values="M30 20C30 20 70 20 70 50C70 80 30 80 30 80;
+                                M30 20C30 20 70 20 70 50C70 80 30 80 30 80"
+                        fill="freeze" />
+                </path>
+            </svg>
+        </div>
         <div class="form-group">
             <label for="gameSelect">Select Game</label>
             <select id="gameSelect">
@@ -51,15 +74,11 @@
             <div id="previousKeysList"></div>
         </div>
         <div class="video-container">
-            <h2 style="font-size: 1em; text-align: center; font-family: 'Poppins', sans-serif; animation: fadeIn 5s ease-in-out; background: linear-gradient(90deg, #1a73e8, #ff7e5f); -webkit-background-clip: text; color: transparent;">
-                Watch This Video
-            </h2>
+            <h2>Watch This Video</h2>
             <iframe width="98%" height="315" src="https://www.youtube.com/embed/9bZkp7q19f0" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
         </div>
         <div class="footer">
-            <p style="font-size: 1em; text-align: center; font-family: 'Poppins', sans-serif; animation: fadeIn 5s ease-in-out; background: linear-gradient(90deg, #1a73e8, #ff7e5f); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
-                © Mohamed Samyh
-            </p>
+            <p>© Mohamed Samyh</p>
         </div>
     </div>
     <script src="script.js"></script>
