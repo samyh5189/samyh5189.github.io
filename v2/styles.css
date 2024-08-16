@@ -192,15 +192,15 @@ body {
 
 .video-container {
     margin-top: 30px;
-}
-
-.video-title {
-    text-align: center;
-    margin-bottom: 15px;
+    width: 100%;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .video-wrapper {
     position: relative;
+    width: 100%;
     padding-bottom: 56.25%; /* 16:9 aspect ratio */
     height: 0;
     overflow: hidden;
@@ -343,7 +343,95 @@ body.dark-mode ::-webkit-scrollbar-thumb:hover {
         margin-bottom: 10px;
     }
 
+.video-container {
+        width: 100%;
+        padding: 0 15px;
+        box-sizing: border-box;
+    }
+
     .video-wrapper {
         padding-bottom: 75%; /* 4:3 aspect ratio for smaller screens */
     }
+}
+
+/* Additional styles for better mobile responsiveness */
+@media (max-width: 400px) {
+    .main-title {
+        font-size: 20px;
+    }
+
+    .logo {
+        width: 80px;
+    }
+
+    .btn-generate, .btn-copy, .btn-generate-more, .copyKeyBtn {
+        font-size: 14px;
+    }
+}
+
+/* Ensure dark mode styles are applied correctly on mobile */
+@media (max-width: 600px) {
+    body.dark-mode .container {
+        background-color: #2a2a2a;
+    }
+
+    body.dark-mode .select-style,
+    body.dark-mode .key-item input,
+    body.dark-mode .btn-generate,
+    body.dark-mode .btn-copy,
+    body.dark-mode .btn-generate-more,
+    body.dark-mode .copyKeyBtn {
+        background-color: #3a3a3a;
+        color: #f0f0f0;
+    }
+}
+
+/* Enhance accessibility */
+.btn-generate:focus,
+.btn-copy:focus,
+.btn-generate-more:focus,
+.copyKeyBtn:focus,
+.select-style:focus {
+    outline: 2px solid #4a90e2;
+    outline-offset: 2px;
+}
+
+body.dark-mode .btn-generate:focus,
+body.dark-mode .btn-copy:focus,
+body.dark-mode .btn-generate-more:focus,
+body.dark-mode .copyKeyBtn:focus,
+body.dark-mode .select-style:focus {
+    outline-color: #60a5fa;
+}
+
+/* Improve readability in dark mode */
+body.dark-mode .progress-text,
+body.dark-mode .progress-log,
+body.dark-mode .copy-status {
+    color: #f0f0f0;
+}
+
+body.dark-mode .progress-bar-container {
+    background-color: #3a3a3a;
+}
+
+body.dark-mode .progress-bar {
+    background-color: #60a5fa;
+}
+
+/* Enhance button styles */
+.btn-generate, .btn-copy, .btn-generate-more, .copyKeyBtn {
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+}
+
+/* Improve form layout */
+.form-group {
+    margin-bottom: 15px;
+}
+
+/* Add transitions for smooth dark mode toggle */
+body, .container, .select-style, .key-item input, .btn-generate, .btn-copy, .btn-generate-more, .copyKeyBtn {
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }
