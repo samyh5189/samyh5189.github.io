@@ -1,21 +1,36 @@
+/* Base styles */
+:root {
+    --primary-color: #4a90e2;
+    --primary-color-dark: #3a7bc8;
+    --background-color: #f4f4f4;
+    --text-color: #333;
+    --container-bg: #ffffff;
+    --border-color: #ddd;
+    --success-color: #4caf50;
+    --focus-color: rgba(74, 144, 226, 0.5);
+}
+
 body {
     font-family: 'Poppins', sans-serif;
     line-height: 1.6;
-    color: #333;
-    background-color: #f4f4f4;
+    color: var(--text-color);
+    background-color: var(--background-color);
     margin: 0;
     padding: 0;
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .container {
     max-width: 800px;
     margin: 0 auto;
     padding: 20px;
-    background-color: #ffffff;
+    background-color: var(--container-bg);
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
     border-radius: 8px;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
 
+/* Logo styles */
 .logo-container {
     text-align: center;
     margin-bottom: 20px;
@@ -28,23 +43,18 @@ body {
 }
 
 @keyframes pulse {
-    0% {
-        transform: scale(1);
-    }
-    50% {
-        transform: scale(1.1);
-    }
-    100% {
-        transform: scale(1);
-    }
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
 }
 
+/* Typography */
 .main-title {
     text-align: center;
-    color: #4a90e2;
+    color: var(--primary-color);
     margin-bottom: 30px;
 }
 
+/* Form styles */
 .form-container {
     display: flex;
     flex-direction: column;
@@ -55,6 +65,7 @@ body {
 .form-group {
     display: flex;
     flex-direction: column;
+    margin-bottom: 15px;
 }
 
 .label-text {
@@ -62,40 +73,35 @@ body {
     font-weight: 600;
 }
 
-.label-hidden {
-    display: none;
-}
-
 .select-style, .btn-generate, .btn-copy, .btn-generate-more {
     padding: 10px;
     border-radius: 4px;
-    border: 1px solid #ddd;
+    border: 1px solid var(--border-color);
     font-size: 16px;
-}
-
-.select-style, .key-item input {
     transition: all 0.3s ease;
-    border: 2px solid #ddd;
 }
 
 .select-style:focus, .key-item input:focus {
     outline: none;
-    border-color: #4a90e2;
-    box-shadow: 0 0 5px rgba(74, 144, 226, 0.5);
+    border-color: var(--primary-color);
+    box-shadow: 0 0 5px var(--focus-color);
 }
 
+/* Button styles */
 .btn-generate, .btn-copy, .btn-generate-more, .copyKeyBtn {
-    background-color: #4a90e2;
+    background-color: var(--primary-color);
     color: white;
     border: none;
     cursor: pointer;
-    transition: all 0.3s ease;
     position: relative;
     overflow: hidden;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
 }
 
 .btn-generate:hover, .btn-copy:hover, .btn-generate-more:hover, .copyKeyBtn:hover {
-    background-color: #3a7bc8;
+    background-color: var(--primary-color-dark);
     transform: translateY(-2px);
     box-shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
@@ -105,46 +111,11 @@ body {
     box-shadow: none;
 }
 
-.btn-generate:after, .btn-copy:after, .btn-generate-more:after, .copyKeyBtn:after {
-    content: "";
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 5px;
-    height: 5px;
-    background: rgba(255, 255, 255, .5);
-    opacity: 0;
-    border-radius: 100%;
-    transform: scale(1, 1) translate(-50%);
-    transform-origin: 50% 50%;
-}
-
-@keyframes ripple {
-    0% {
-        transform: scale(0, 0);
-        opacity: 1;
-    }
-    20% {
-        transform: scale(25, 25);
-        opacity: 1;
-    }
-    100% {
-        opacity: 0;
-        transform: scale(40, 40);
-    }
-}
-
-.btn-generate:focus:not(:active)::after, 
-.btn-copy:focus:not(:active)::after, 
-.btn-generate-more:focus:not(:active)::after, 
-.copyKeyBtn:focus:not(:active)::after {
-    animation: ripple 1s ease-out;
-}
-
+/* Progress bar styles */
 .progress-bar-container {
     width: 100%;
     height: 20px;
-    background-color: #f0f0f0;
+    background-color: var(--border-color);
     border-radius: 10px;
     overflow: hidden;
     margin-bottom: 10px;
@@ -153,7 +124,7 @@ body {
 .progress-bar {
     width: 0;
     height: 100%;
-    background-color: #4caf50;
+    background-color: var(--success-color);
     transition: width 0.3s ease;
 }
 
@@ -162,6 +133,7 @@ body {
     margin-bottom: 10px;
 }
 
+/* Key list styles */
 .keys-list {
     display: flex;
     flex-direction: column;
@@ -177,19 +149,12 @@ body {
 .key-item input {
     flex-grow: 1;
     padding: 5px;
-    border: 1px solid #ddd;
+    border: 1px solid var(--border-color);
     border-radius: 4px;
+    transition: all 0.3s ease;
 }
 
-.copyKeyBtn {
-    padding: 5px 10px;
-    background-color: #4a90e2;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
+/* Video container styles */
 .video-container {
     margin-top: 30px;
     width: 100%;
@@ -214,57 +179,43 @@ body {
     height: 100%;
 }
 
+/* Footer styles */
 .footer {
     text-align: center;
     margin-top: 30px;
     padding-top: 20px;
-    border-top: 1px solid #ddd;
+    border-top: 1px solid var(--border-color);
 }
 
+/* Utility classes */
 .hidden {
     display: none;
 }
 
 .copy-status {
     text-align: center;
-    color: #4caf50;
+    color: var(--success-color);
     margin-top: 10px;
 }
 
 /* Dark mode styles */
 body.dark-mode {
-    background-color: #1a1a1a;
-    color: #f0f0f0;
+    --background-color: #1a1a1a;
+    --text-color: #f0f0f0;
+    --container-bg: #2a2a2a;
+    --primary-color: #60a5fa;
+    --primary-color-dark: #3b82f6;
+    --border-color: #4a4a4a;
+    --focus-color: rgba(96, 165, 250, 0.5);
 }
 
 body.dark-mode .container {
-    background-color: #2a2a2a;
     box-shadow: 0 0 10px rgba(255,255,255,0.1);
-}
-
-body.dark-mode .main-title {
-    color: #60a5fa;
 }
 
 body.dark-mode .select-style,
 body.dark-mode .key-item input {
     background-color: #3a3a3a;
-    color: #f0f0f0;
-    border-color: #4a4a4a;
-}
-
-body.dark-mode .btn-generate,
-body.dark-mode .btn-copy,
-body.dark-mode .btn-generate-more,
-body.dark-mode .copyKeyBtn {
-    background-color: #60a5fa;
-}
-
-body.dark-mode .btn-generate:hover,
-body.dark-mode .btn-copy:hover,
-body.dark-mode .btn-generate-more:hover,
-body.dark-mode .copyKeyBtn:hover {
-    background-color: #3b82f6;
 }
 
 /* Dark mode toggle button */
@@ -276,16 +227,18 @@ body.dark-mode .copyKeyBtn:hover {
     border: none;
     cursor: pointer;
     padding: 0;
+    z-index: 1000;
 }
 
 .dark-mode-toggle svg {
     width: 24px;
     height: 24px;
-    color: #4a90e2;
+    color: var(--primary-color);
+    transition: color 0.3s ease;
 }
 
 body.dark-mode .dark-mode-toggle svg {
-    color: #60a5fa;
+    color: var(--primary-color);
 }
 
 /* Custom scrollbar */
@@ -294,31 +247,19 @@ body.dark-mode .dark-mode-toggle svg {
 }
 
 ::-webkit-scrollbar-track {
-    background: #f1f1f1;
+    background: var(--background-color);
 }
 
 ::-webkit-scrollbar-thumb {
-    background: #888;
+    background: var(--border-color);
     border-radius: 5px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: #555;
+    background: var(--text-color);
 }
 
-body.dark-mode ::-webkit-scrollbar-track {
-    background: #2a2a2a;
-}
-
-body.dark-mode ::-webkit-scrollbar-thumb {
-    background: #666;
-}
-
-body.dark-mode ::-webkit-scrollbar-thumb:hover {
-    background: #888;
-}
-
-/* Improved responsive design */
+/* Responsive design */
 @media (max-width: 600px) {
     .container {
         padding: 15px;
@@ -343,7 +284,7 @@ body.dark-mode ::-webkit-scrollbar-thumb:hover {
         margin-bottom: 10px;
     }
 
-.video-container {
+    .video-container {
         width: 100%;
         padding: 0 15px;
         box-sizing: border-box;
@@ -354,7 +295,6 @@ body.dark-mode ::-webkit-scrollbar-thumb:hover {
     }
 }
 
-/* Additional styles for better mobile responsiveness */
 @media (max-width: 400px) {
     .main-title {
         font-size: 20px;
@@ -369,69 +309,12 @@ body.dark-mode ::-webkit-scrollbar-thumb:hover {
     }
 }
 
-/* Ensure dark mode styles are applied correctly on mobile */
-@media (max-width: 600px) {
-    body.dark-mode .container {
-        background-color: #2a2a2a;
-    }
-
-    body.dark-mode .select-style,
-    body.dark-mode .key-item input,
-    body.dark-mode .btn-generate,
-    body.dark-mode .btn-copy,
-    body.dark-mode .btn-generate-more,
-    body.dark-mode .copyKeyBtn {
-        background-color: #3a3a3a;
-        color: #f0f0f0;
-    }
-}
-
-/* Enhance accessibility */
+/* Accessibility improvements */
 .btn-generate:focus,
 .btn-copy:focus,
 .btn-generate-more:focus,
 .copyKeyBtn:focus,
 .select-style:focus {
-    outline: 2px solid #4a90e2;
+    outline: 2px solid var(--primary-color);
     outline-offset: 2px;
-}
-
-body.dark-mode .btn-generate:focus,
-body.dark-mode .btn-copy:focus,
-body.dark-mode .btn-generate-more:focus,
-body.dark-mode .copyKeyBtn:focus,
-body.dark-mode .select-style:focus {
-    outline-color: #60a5fa;
-}
-
-/* Improve readability in dark mode */
-body.dark-mode .progress-text,
-body.dark-mode .progress-log,
-body.dark-mode .copy-status {
-    color: #f0f0f0;
-}
-
-body.dark-mode .progress-bar-container {
-    background-color: #3a3a3a;
-}
-
-body.dark-mode .progress-bar {
-    background-color: #60a5fa;
-}
-
-/* Enhance button styles */
-.btn-generate, .btn-copy, .btn-generate-more, .copyKeyBtn {
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    font-weight: 600;
-}
-
-/* Improve form layout */
-.form-group {
-    margin-bottom: 15px;
-}
-
-/* Add transitions for smooth dark mode toggle */
-body, .container, .select-style, .key-item input, .btn-generate, .btn-copy, .btn-generate-more, .copyKeyBtn {
-    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }
