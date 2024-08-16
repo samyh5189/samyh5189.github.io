@@ -29,10 +29,10 @@ document.addEventListener('DOMContentLoaded', () => {
             promoId: 'dc128d28-c45b-411c-98ff-ac7726fbaea4',
         },
         6: {
-    name: 'Twerk Race 3D',
-    appToken: '61308365-9d16-4040-8bb0-2f4a4c69074c',
-    promoId: '61308365-9d16-4040-8bb0-2f4a4c69074c'
-        }
+            name: 'Twerk Race 3D',
+            appToken: '61308365-9d16-4040-8bb0-2f4a4c69074c',
+            promoId: '61308365-9d16-4040-8bb0-2f4a4c69074c'
+        },
     };
 
     const startBtn = document.getElementById('startBtn');
@@ -273,5 +273,4 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    
 });
