@@ -141,6 +141,16 @@ document.addEventListener('DOMContentLoaded', () => {
         elements.generatedKeysTitle.classList.toggle('hidden', isGenerating);
         elements.formContainer.classList.toggle('hidden', isGenerating);
         elements.startBtn.disabled = isGenerating;
+
+        // Hide "Choose Your Game" text and related elements
+        const gameSelectLabel = document.querySelector('label[for="gameSelect"]');
+        if (gameSelectLabel) {
+            gameSelectLabel.classList.toggle('hidden', isGenerating);
+        }
+        elements.gameSelect.classList.toggle('hidden', isGenerating);
+
+        // Hide "Number of Keys" text
+        elements.keyCountLabel.classList.toggle('hidden', isGenerating);
     };
 
     const copyToClipboard = (text) => {
