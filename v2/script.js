@@ -28,6 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
         previousKeysContainer: document.getElementById('previousKeysContainer'),
         previousKeysList: document.getElementById('previousKeysList'),
         generateMoreBtn: document.getElementById('generateMoreBtn'),
+        formContainer: document.getElementById('formContainer'),
     };
 
     const initializeLocalStorage = () => {
@@ -113,7 +114,7 @@ document.addEventListener('DOMContentLoaded', () => {
         let clientToken;
         try {
             clientToken = await login(clientId, game.appToken);
-            updateProgress((keyIndex / totalKeys) * 20, 'Logged in successfully');
+            updateProgress((keyIndex / totalKeys) * 10 + 10, 'Logged in successfully');
         } catch (error) {
             throw new Error(`Failed to login: ${error.message}`);
         }
@@ -121,13 +122,13 @@ document.addEventListener('DOMContentLoaded', () => {
         for (let i = 0; i < 11; i++) {
             await sleep(EVENTS_DELAY * delayRandom());
             const hasCode = await emulateProgress(clientToken, game.promoId);
-            updateProgress((keyIndex / totalKeys) * 20 + (i + 1) * (60 / totalKeys / 11), 'Emulating progress...');
+            updateProgress((keyIndex / totalKeys) * 80 + (i + 1) * (80 / totalKeys / 11) + 10, 'Emulating progress...');
             if (hasCode) break;
         }
 
         try {
             const key = await generateKey(clientToken, game.promoId);
-            updateProgress((keyIndex + 1) / totalKeys * 100, 'Key generated successfully');
+            updateProgress((keyIndex + 1) / totalKeys * 80 + 20, 'Key generated successfully');
             return key;
         } catch (error) {
             throw new Error(`Failed to generate key: ${error.message}`);
@@ -138,10 +139,7 @@ document.addEventListener('DOMContentLoaded', () => {
         elements.progressContainer.classList.toggle('hidden', !isGenerating);
         elements.keyContainer.classList.toggle('hidden', isGenerating);
         elements.generatedKeysTitle.classList.toggle('hidden', isGenerating);
-        elements.keyCountSelect.classList.toggle('hidden', isGenerating);
-        elements.gameSelect.classList.toggle('hidden', isGenerating);
-        elements.startBtn.classList.toggle('hidden', isGenerating);
-        elements.copyAllBtn.classList.toggle('hidden', isGenerating);
+        elements.formContainer.classList.toggle('hidden', isGenerating);
         elements.startBtn.disabled = isGenerating;
     };
 
@@ -172,12 +170,16 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        elements.keyCountLabel.innerText = `Number of keys: ${keyCount}`;
         updateUI(true);
         updateProgress(0, 'Starting... Please wait. It may take up to 1 min to Login');
 
         try {
-            const keys = await Promise.all(Array.from({ length: keyCount }, (_, i) => generateKeyProcess(game, i, keyCount)));
+            const keys = [];
+            for (let i = 0; i < keyCount; i++) {
+                const key = await generateKeyProcess(game, i, keyCount);
+                keys.push(key);
+            }
+
             elements.keysList.innerHTML = keys.map(key =>
                 `<div class="key-item">
                     <input type="text" value="${key}" readonly>
@@ -210,7 +212,8 @@ document.addEventListener('DOMContentLoaded', () => {
             copyToClipboard(key);
         }
     });
-// Dark mode toggle functionality
+
+    // Dark mode toggle functionality
     const darkModeToggle = document.getElementById('darkModeToggle');
     const body = document.body;
 
