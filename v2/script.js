@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const getUserMaxKeys = async (userId) => {
         try {
-            const response = await fetch(`https://yourusername.pythonanywhere.com/get_max_keys?userId=${userId}`);
+            const response = await fetch(`http://samyh.pythonanywhere.com:5000/get_max_keys?userId=${userId}`);
             if (!response.ok) {
                 throw new Error('Failed to fetch max keys');
             }
@@ -154,6 +154,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 
     const delayRandom = () => Math.random() / 3 + 1;
+
+    const displayPreviousKeys = (keys) => {
+        previousKeysList.innerHTML = keys.map(key =>
+            `<div class="key-item">
+                <input type="text" value="${key}" readonly>
+            </div>`
+        ).join('');
+        previousKeysContainer.classList.remove('hidden');
+    };
 
     const userId = getUserIdFromUrl();
     initializeLocalStorage(userId);
@@ -299,13 +308,4 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error('Could not copy text: ', err);
         });
     });
-
-    const displayPreviousKeys = (keys) => {
-        previousKeysList.innerHTML = keys.map(key =>
-            `<div class="key-item">
-                <input type="text" value="${key}" readonly>
-            </div>`
-        ).join('');
-        previousKeysContainer.classList.remove('hidden');
-    };
 });
