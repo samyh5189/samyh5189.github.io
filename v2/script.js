@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const getUserMaxKeys = async (userId) => {
         try {
-            const response = await fetch(`http://localhost:5000/get_max_keys?userId=${userId}`);
+            const response = await fetch(`https://yourusername.pythonanywhere.com/get_max_keys?userId=${userId}`);
             if (!response.ok) {
                 throw new Error('Failed to fetch max keys');
             }
@@ -163,28 +163,35 @@ document.addEventListener('DOMContentLoaded', () => {
         const keyCount = parseInt(keyCountSelect.value);
         const game = games[gameChoice];
 
-        const MAX_KEYS_PER_GAME_PER_DAY = await getUserMaxKeys(userId);
-
-        const storageKey = `keys_generated_${game.name}_${userId}`;
-        let storedData = JSON.parse(localStorage.getItem(storageKey));
-
-        if (!storedData || storedData.date !== new Date().toISOString().split('T')[0]) {
-            storedData = { date: new Date().toISOString().split('T')[0], count: 0, keys: [] };
-            localStorage.setItem(storageKey, JSON.stringify(storedData));
-        }
-
-        if (storedData.count + keyCount > MAX_KEYS_PER_GAME_PER_DAY) {
-            alert(`You can generate only ${MAX_KEYS_PER_GAME_PER_DAY - storedData.count} more keys for ${game.name} today.`);
-            previousKeysList.innerHTML = storedData.keys.map(key =>
-                `<div class="key-item">
-                    <input type="text" value="${key}" readonly>
-                </div>`
-            ).join('');
-            previousKeysContainer.classList.remove('hidden');
+        if (!userId) {
+            alert("User ID not found. Please access this page through the Telegram bot.");
             return;
         }
 
-        keyCountLabel.innerText = `Number of keys: ${keyCount}`;
+        const MAX_KEYS_PER_GAME_PER_DAY = await getUserMaxKeys(userId);
+
+        const storageKey = `keys_generated_${game.name}_${userId}`;
+        let storedData = JSON.parse(localStorage.getItem(storageKey)) || { date: new Date().toISOString().split('T')[0], count: 0, keys: [] };
+
+        if (storedData.date !== new Date().toISOString().split('T')[0]) {
+            storedData = { date: new Date().toISOString().split('T')[0], count: 0, keys: [] };
+        }
+
+        const remainingKeys = MAX_KEYS_PER_GAME_PER_DAY - storedData.count;
+
+        if (remainingKeys <= 0) {
+            alert(`You have reached your daily limit for ${game.name}. Please try again tomorrow.`);
+            displayPreviousKeys(storedData.keys);
+            return;
+        }
+
+        const keysToGenerate = Math.min(keyCount, remainingKeys);
+
+        if (keysToGenerate < keyCount) {
+            alert(`You can only generate ${keysToGenerate} more keys for ${game.name} today.`);
+        }
+
+        keyCountLabel.innerText = `Number of keys: ${keysToGenerate}`;
 
         progressBar.style.width = '0%';
         progressText.innerText = '0%';
@@ -221,7 +228,7 @@ document.addEventListener('DOMContentLoaded', () => {
             for (let i = 0; i < 11; i++) {
                 await sleep(EVENTS_DELAY * delayRandom());
                 const hasCode = await emulateProgress(clientToken, game.promoId);
-                updateProgress(7 / keyCount, 'Emulating progress...');
+                updateProgress(7 / keysToGenerate, 'Emulating progress...');
                 if (hasCode) {
                     break;
                 }
@@ -229,7 +236,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             try {
                 const key = await generateKey(clientToken, game.promoId);
-                updateProgress(30 / keyCount, 'Generating key...');
+                updateProgress(30 / keysToGenerate, 'Generating key...');
                 return key;
             } catch (error) {
                 alert(`Failed to generate key: ${error.message}`);
@@ -237,7 +244,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         };
 
-        const keys = await Promise.all(Array.from({ length: keyCount }, generateKeyProcess));
+        const keys = await Promise.all(Array.from({ length: keysToGenerate }, generateKeyProcess));
 
         if (keys.length > 1) {
             keysList.innerHTML = keys.filter(key => key).map(key =>
@@ -292,4 +299,13 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error('Could not copy text: ', err);
         });
     });
+
+    const displayPreviousKeys = (keys) => {
+        previousKeysList.innerHTML = keys.map(key =>
+            `<div class="key-item">
+                <input type="text" value="${key}" readonly>
+            </div>`
+        ).join('');
+        previousKeysContainer.classList.remove('hidden');
+    };
 });
