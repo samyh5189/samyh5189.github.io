@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const getUserMaxKeys = async (userId) => {
         try {
-            const response = await fetch(`http://samyh.pythonanywhere.com:5000/get_max_keys?userId=${userId}`);
+            const response = await fetch(`http://samyh.pythonanywhere.com:5001/get_max_keys?userId=${userId}`);
             if (!response.ok) {
                 throw new Error('Failed to fetch max keys');
             }
