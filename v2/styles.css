@@ -6,7 +6,92 @@ body {
     margin: 0;
     padding: 0;
 }
+/* Dark mode styles */
+body.dark-mode {
+    background-color: #1a1a1a;
+    color: #f0f0f0;
+}
 
+body.dark-mode .container {
+    background-color: #2a2a2a;
+    box-shadow: 0 0 10px rgba(255,255,255,0.1);
+}
+
+body.dark-mode .main-title {
+    color: #60a5fa;
+}
+
+body.dark-mode .select-style,
+body.dark-mode .key-item input {
+    background-color: #3a3a3a;
+    color: #f0f0f0;
+    border-color: #4a4a4a;
+}
+
+body.dark-mode .btn-generate,
+body.dark-mode .btn-copy,
+body.dark-mode .btn-generate-more,
+body.dark-mode .copyKeyBtn {
+    background-color: #60a5fa;
+}
+
+body.dark-mode .btn-generate:hover,
+body.dark-mode .btn-copy:hover,
+body.dark-mode .btn-generate-more:hover,
+body.dark-mode .copyKeyBtn:hover {
+    background-color: #3b82f6;
+}
+
+/* Dark mode toggle button */
+.dark-mode-toggle {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+}
+
+.dark-mode-toggle svg {
+    width: 24px;
+    height: 24px;
+    color: #4a90e2;
+}
+
+body.dark-mode .dark-mode-toggle svg {
+    color: #60a5fa;
+}
+
+/* Improved responsive design */
+@media (max-width: 600px) {
+    .container {
+        padding: 15px;
+    }
+
+    .main-title {
+        font-size: 24px;
+    }
+
+    .form-group,
+    .key-item {
+        flex-direction: column;
+    }
+
+    .select-style,
+    .btn-generate,
+    .btn-copy,
+    .btn-generate-more,
+    .key-item input,
+    .copyKeyBtn {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+    .video-wrapper {
+        padding-bottom: 75%; /* 4:3 aspect ratio for smaller screens */
+    }
+}
 .container {
     max-width: 800px;
     margin: 0 auto;
