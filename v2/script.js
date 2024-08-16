@@ -67,7 +67,9 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const generateClientId = () => {
-        return `${Date.now()}-${crypto.randomUUID()}`;
+        const timestamp = Date.now();
+        const randomNumbers = Array.from({ length: 19 }, () => Math.floor(Math.random() * 10)).join('');
+        return `${timestamp}-${randomNumbers}`;
     };
 
     const login = async (clientId, appToken) => {
@@ -105,7 +107,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 },
                 body: JSON.stringify({
                     promoId,
-                    eventId: crypto.randomUUID(),
+                    eventId: generateUUID(),
                     eventOrigin: 'undefined'
                 })
             });
@@ -152,6 +154,13 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
+    const generateUUID = () => {
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+            const r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
+            return v.toString(16);
+        });
+    };
+
     const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 
     const delayRandom = () => Math.random() / 3 + 1;
@@ -163,29 +172,26 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log(`Progress: ${progress}% - ${message}`);
     };
 
-    const generateKeyProcess = async (game) => {
+    const generateKeyProcess = async (game, keyCount) => {
         const clientId = generateClientId();
         let clientToken;
         try {
-            updateProgress(10, 'Logging in...');
             clientToken = await login(clientId, game.appToken);
-            updateProgress(30, 'Login successful, emulating progress...');
+            updateProgress(10 / keyCount, 'Logged in successfully');
 
             for (let i = 0; i < 11; i++) {
                 await sleep(EVENTS_DELAY * delayRandom());
                 const hasCode = await emulateProgress(clientToken, game.promoId);
-                updateProgress(30 + (i + 1) * 5, `Emulating progress: ${i + 1}/11`);
+                updateProgress((10 + i * 5) / keyCount, 'Emulating progress...');
                 if (hasCode) break;
             }
 
-            updateProgress(90, 'Generating key...');
             const key = await generateKey(clientToken, game.promoId);
-            updateProgress(100, 'Key generated successfully');
+            updateProgress(70 / keyCount, 'Key generated successfully');
             return key;
         } catch (error) {
-            console.error('Key generation process failed:', error);
-            updateProgress(0, `Key generation failed: ${error.message}`);
-            throw error;
+            console.error(`Failed to generate key: ${error.message}`);
+            return null;
         }
     };
 
@@ -257,7 +263,7 @@ document.addEventListener('DOMContentLoaded', () => {
         updateProgress(0, 'Starting... \nPlease wait. It may take up to 1 min to login');
 
         try {
-            const keys = await Promise.all(Array.from({ length: keyCount }, () => generateKeyProcess(game)));
+            const keys = await Promise.all(Array.from({ length: keyCount }, () => generateKeyProcess(game, keyCount)));
             const validKeys = keys.filter(Boolean);
             if (validKeys.length > 0) {
                 displayKeys(validKeys);
