@@ -24,6 +24,19 @@ body {
 .logo {
     width: 100px;
     height: auto;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+    }
 }
 
 .main-title {
@@ -49,6 +62,10 @@ body {
     font-weight: 600;
 }
 
+.label-hidden {
+    display: none;
+}
+
 .select-style, .btn-generate, .btn-copy, .btn-generate-more {
     padding: 10px;
     border-radius: 4px;
@@ -56,16 +73,72 @@ body {
     font-size: 16px;
 }
 
-.btn-generate, .btn-copy, .btn-generate-more {
+.select-style, .key-item input {
+    transition: all 0.3s ease;
+    border: 2px solid #ddd;
+}
+
+.select-style:focus, .key-item input:focus {
+    outline: none;
+    border-color: #4a90e2;
+    box-shadow: 0 0 5px rgba(74, 144, 226, 0.5);
+}
+
+.btn-generate, .btn-copy, .btn-generate-more, .copyKeyBtn {
     background-color: #4a90e2;
     color: white;
     border: none;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
 }
 
-.btn-generate:hover, .btn-copy:hover, .btn-generate-more:hover {
+.btn-generate:hover, .btn-copy:hover, .btn-generate-more:hover, .copyKeyBtn:hover {
     background-color: #3a7bc8;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.btn-generate:active, .btn-copy:active, .btn-generate-more:active, .copyKeyBtn:active {
+    transform: translateY(0);
+    box-shadow: none;
+}
+
+.btn-generate:after, .btn-copy:after, .btn-generate-more:after, .copyKeyBtn:after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 5px;
+    height: 5px;
+    background: rgba(255, 255, 255, .5);
+    opacity: 0;
+    border-radius: 100%;
+    transform: scale(1, 1) translate(-50%);
+    transform-origin: 50% 50%;
+}
+
+@keyframes ripple {
+    0% {
+        transform: scale(0, 0);
+        opacity: 1;
+    }
+    20% {
+        transform: scale(25, 25);
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+        transform: scale(40, 40);
+    }
+}
+
+.btn-generate:focus:not(:active)::after, 
+.btn-copy:focus:not(:active)::after, 
+.btn-generate-more:focus:not(:active)::after, 
+.copyKeyBtn:focus:not(:active)::after {
+    animation: ripple 1s ease-out;
 }
 
 .progress-bar-container {
@@ -213,6 +286,36 @@ body.dark-mode .copyKeyBtn:hover {
 
 body.dark-mode .dark-mode-toggle svg {
     color: #60a5fa;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+body.dark-mode ::-webkit-scrollbar-track {
+    background: #2a2a2a;
+}
+
+body.dark-mode ::-webkit-scrollbar-thumb {
+    background: #666;
+}
+
+body.dark-mode ::-webkit-scrollbar-thumb:hover {
+    background: #888;
 }
 
 /* Improved responsive design */
