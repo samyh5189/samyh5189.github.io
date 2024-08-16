@@ -141,16 +141,6 @@ document.addEventListener('DOMContentLoaded', () => {
         elements.generatedKeysTitle.classList.toggle('hidden', isGenerating);
         elements.formContainer.classList.toggle('hidden', isGenerating);
         elements.startBtn.disabled = isGenerating;
-
-        // Hide "Choose Your Game" text and related elements
-        const gameSelectLabel = document.querySelector('label[for="gameSelect"]');
-        if (gameSelectLabel) {
-            gameSelectLabel.classList.toggle('hidden', isGenerating);
-        }
-        elements.gameSelect.classList.toggle('hidden', isGenerating);
-
-        // Hide "Number of Keys" text
-        elements.keyCountLabel.classList.toggle('hidden', isGenerating);
     };
 
     const copyToClipboard = (text) => {
@@ -184,12 +174,7 @@ document.addEventListener('DOMContentLoaded', () => {
         updateProgress(0, 'Starting... Please wait. It may take up to 1 min to Login');
 
         try {
-            const keys = [];
-            for (let i = 0; i < keyCount; i++) {
-                const key = await generateKeyProcess(game, i, keyCount);
-                keys.push(key);
-            }
-
+            const keys = await Promise.all(Array.from({ length: keyCount }, (_, i) => generateKeyProcess(game, i, keyCount)));
             elements.keysList.innerHTML = keys.map(key =>
                 `<div class="key-item">
                     <input type="text" value="${key}" readonly>
@@ -220,24 +205,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (event.target.classList.contains('copyKeyBtn')) {
             const key = event.target.getAttribute('data-key');
             copyToClipboard(key);
-        }
-    });
-
-    // Dark mode toggle functionality
-    const darkModeToggle = document.getElementById('darkModeToggle');
-    const body = document.body;
-
-    // Check for saved dark mode preference
-    if (localStorage.getItem('darkMode') === 'enabled') {
-        body.classList.add('dark-mode');
-    }
-
-    darkModeToggle.addEventListener('click', () => {
-        body.classList.toggle('dark-mode');
-        if (body.classList.contains('dark-mode')) {
-            localStorage.setItem('darkMode', 'enabled');
-        } else {
-            localStorage.setItem('darkMode', null);
         }
     });
 });
