@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     const EVENTS_DELAY = 21000;
-    const MAX_KEYS_PER_GAME_PER_DAY = 100000;
+    const MAX_KEYS_PER_GAME_PER_DAY = 10000;
 
     const games = {
         1: {
@@ -73,85 +73,66 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const login = async (clientId, appToken) => {
-        try {
-            console.log('Attempting to login...');
-            const response = await fetch('https://api.gamepromo.io/promo/login-client', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ appToken, clientId, clientOrigin: 'deviceid' })
-            });
+        const response = await fetch('https://api.gamepromo.io/promo/login-client', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                appToken,
+                clientId,
+                clientOrigin: 'deviceid'
+            })
+        });
 
-            if (!response.ok) {
-                const errorText = await response.text();
-                throw new Error(`Login failed: ${response.status} ${response.statusText}. ${errorText}`);
-            }
-
-            const data = await response.json();
-            console.log('Login successful');
-            return data.clientToken;
-        } catch (error) {
-            console.error('Login error:', error);
-            updateProgress(0, `Login failed: ${error.message}`);
-            throw error;
+        if (!response.ok) {
+            throw new Error('Failed to login');
         }
+
+        const data = await response.json();
+        return data.clientToken;
     };
 
     const emulateProgress = async (clientToken, promoId) => {
-        try {
-            console.log('Emulating progress...');
-            const response = await fetch('https://api.gamepromo.io/promo/register-event', {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${clientToken}`,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    promoId,
-                    eventId: generateUUID(),
-                    eventOrigin: 'undefined'
-                })
-            });
+        const response = await fetch('https://api.gamepromo.io/promo/register-event', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${clientToken}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                promoId,
+                eventId: generateUUID(),
+                eventOrigin: 'undefined'
+            })
+        });
 
-            if (!response.ok) {
-                const errorText = await response.text();
-                throw new Error(`Progress emulation failed: ${response.status} ${response.statusText}. ${errorText}`);
-            }
-
-            const data = await response.json();
-            console.log('Progress emulation successful');
-            return data.hasCode;
-        } catch (error) {
-            console.error('Progress emulation error:', error);
-            updateProgress(0, `Progress emulation failed: ${error.message}`);
+        if (!response.ok) {
             return false;
         }
+
+        const data = await response.json();
+        return data.hasCode;
     };
 
     const generateKey = async (clientToken, promoId) => {
-        try {
-            console.log('Generating key...');
-            const response = await fetch('https://api.gamepromo.io/promo/create-code', {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${clientToken}`,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ promoId })
-            });
+        const response = await fetch('https://api.gamepromo.io/promo/create-code', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${clientToken}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                promoId
+            })
+        });
 
-            if (!response.ok) {
-                const errorText = await response.text();
-                throw new Error(`Key generation failed: ${response.status} ${response.statusText}. ${errorText}`);
-            }
-
-            const data = await response.json();
-            console.log('Key generated successfully');
-            return data.promoCode;
-        } catch (error) {
-            console.error('Key generation error:', error);
-            updateProgress(0, `Key generation failed: ${error.message}`);
-            throw error;
+        if (!response.ok) {
+            throw new Error('Failed to generate key');
         }
+
+        const data = await response.json();
+        return data.promoCode;
     };
 
     const generateUUID = () => {
@@ -165,11 +146,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const delayRandom = () => Math.random() / 3 + 1;
 
-    const updateProgress = (progress, message) => {
+    let progress = 0;
+    const updateProgress = (increment, message) => {
+        progress += increment;
         elements.progressBar.style.width = `${progress}%`;
         elements.progressText.innerText = `${progress}%`;
         elements.progressLog.innerText = message;
-        console.log(`Progress: ${progress}% - ${message}`);
     };
 
     const generateKeyProcess = async (game, keyCount) => {
@@ -177,20 +159,27 @@ document.addEventListener('DOMContentLoaded', () => {
         let clientToken;
         try {
             clientToken = await login(clientId, game.appToken);
-            updateProgress(10 / keyCount, 'Logged in successfully');
+        } catch (error) {
+            alert(`Failed to login: ${error.message}`);
+            elements.startBtn.disabled = false;
+            return null;
+        }
 
-            for (let i = 0; i < 11; i++) {
-                await sleep(EVENTS_DELAY * delayRandom());
-                const hasCode = await emulateProgress(clientToken, game.promoId);
-                updateProgress((10 + i * 5) / keyCount, 'Emulating progress...');
-                if (hasCode) break;
+        for (let i = 0; i < 11; i++) {
+            await sleep(EVENTS_DELAY * delayRandom());
+            const hasCode = await emulateProgress(clientToken, game.promoId);
+            updateProgress(7 / keyCount, 'Emulating progress...');
+            if (hasCode) {
+                break;
             }
+        }
 
+        try {
             const key = await generateKey(clientToken, game.promoId);
-            updateProgress(70 / keyCount, 'Key generated successfully');
+            updateProgress(30 / keyCount, 'Generating key...');
             return key;
         } catch (error) {
-            console.error(`Failed to generate key: ${error.message}`);
+            alert(`Failed to generate key: ${error.message}`);
             return null;
         }
     };
@@ -239,7 +228,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
-    const handleStartButtonClick = async () => {
+    elements.startBtn.addEventListener('click', async () => {
         const gameChoice = parseInt(elements.gameSelect.value);
         const keyCount = parseInt(elements.keyCountSelect.value);
         const game = games[gameChoice];
@@ -259,29 +248,25 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         elements.keyCountLabel.innerText = `Number of keys: ${keyCount}`;
+
+        progress = 0;
+        updateProgress(0, 'Starting... \nPlease wait It may take upto 1 min to Login');
         updateUI(true);
-        updateProgress(0, 'Starting... \nPlease wait. It may take up to 1 min to login');
 
-        try {
-            const keys = await Promise.all(Array.from({ length: keyCount }, () => generateKeyProcess(game, keyCount)));
-            const validKeys = keys.filter(Boolean);
-            if (validKeys.length > 0) {
-                displayKeys(validKeys);
-                storedData.count += validKeys.length;
-                storedData.keys.push(...validKeys);
-                localStorage.setItem(storageKey, JSON.stringify(storedData));
-            } else {
-                throw new Error('No valid keys were generated');
-            }
-        } catch (error) {
-            console.error('Key generation failed:', error);
-            alert(`Key generation failed: ${error.message}`);
-        } finally {
-            updateUI(false);
+        const keys = await Promise.all(Array.from({ length: keyCount }, () => generateKeyProcess(game, keyCount)));
+
+        if (keys.length > 1) {
+            displayKeys(keys.filter(key => key));
+        } else if (keys.length === 1 && keys[0]) {
+            displayKeys([keys[0]]);
         }
-    };
 
-    elements.startBtn.addEventListener('click', handleStartButtonClick);
+        storedData.count += keys.filter(key => key).length;
+        storedData.keys.push(...keys.filter(key => key));
+        localStorage.setItem(storageKey, JSON.stringify(storedData));
+
+        updateUI(false);
+    });
 
     elements.copyAllBtn.addEventListener('click', () => {
         const allKeys = Array.from(document.querySelectorAll('.key-item input')).map(input => input.value).join('\n');
