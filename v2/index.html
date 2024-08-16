@@ -17,8 +17,8 @@
                         <stop offset="100%" style="stop-color:#50e3c2;stop-opacity:1" />
                     </linearGradient>
                     <linearGradient id="skyblueGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" style="stop-color:#87CEEB;stop-opacity:1" /> <!-- Light sky blue -->
-                        <stop offset="100%" style="stop-color:#B0E0E6;stop-opacity:1" /> <!-- Powder blue -->
+                        <stop offset="0%" style="stop-color:#87CEEB;stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:#B0E0E6;stop-opacity:1" />
                     </linearGradient>
                 </defs>
                 <path d="M20,80 Q50,20 80,80 T20,80" fill="url(#grad)" />
@@ -28,7 +28,7 @@
         <h1 class="main-title">Samyh's Key Generator</h1>
         <div id="formContainer" class="form-container">
             <div class="form-group">
-                <label for="gameSelect" class="label-text">Choose Your Game</label>
+                <label for="gameSelect" class="label-text" id="gameSelectLabel">Choose Your Game</label>
                 <select id="gameSelect" class="select-style">
                     <option value="1">Riding Extreme 3D</option>
                     <option value="2">Chain Cube 2048</option>
@@ -68,7 +68,6 @@
             <div id="previousKeysList" class="previous-keys-list"></div>
         </div>
         <div class="video-container">
-        
             <div class="video-wrapper">
                 <iframe width="560" height="315" src="https://www.youtube.com/embed/9bZkp7q19f0" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
             </div>
