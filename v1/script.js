@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     const EVENTS_DELAY = 18000;
-    const MAX_KEYS_PER_GAME_PER_DAY = 5;
+    const MAX_KEYS_PER_GAME_PER_DAY = 4;
 
     const games = {
         1: {
@@ -27,6 +27,11 @@ document.addEventListener('DOMContentLoaded', () => {
             name: 'MergeAway',
             appToken: '8d1cc2ad-e097-4b86-90ef-7a27e19fb833',
             promoId: 'dc128d28-c45b-411c-98ff-ac7726fbaea4',
+        },
+        6: {
+    name: 'Twerk Race 3D',
+    appToken: '61308365-9d16-4040-8bb0-2f4a4c69074c',
+    promoId: '61308365-9d16-4040-8bb0-2f4a4c69074c'
         }
     };
 
@@ -268,5 +273,4 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-   
-});
+    
