@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     const EVENTS_DELAY = 18000;
     const MAX_KEYS_PER_GAME_PER_DAY = 4000;
+    const TOTAL_EVENTS = 11; // Total number of emulated progress events
 
     const games = {
         1: { name: 'Riding Extreme 3D', appToken: 'd28721be-fd2d-4b45-869e-9f253b554e50', promoId: '43e35910-c168-4634-ad4f-52fd764a843f' },
@@ -24,6 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
         copyAllBtn: document.getElementById('copyAllBtn'),
         generatedKeysTitle: document.getElementById('generatedKeysTitle'),
         gameSelect: document.getElementById('gameSelect'),
+        gameSelectLabel: document.getElementById('gameSelectLabel'),
         copyStatus: document.getElementById('copyStatus'),
         previousKeysContainer: document.getElementById('previousKeysContainer'),
         previousKeysList: document.getElementById('previousKeysList'),
@@ -114,21 +116,24 @@ document.addEventListener('DOMContentLoaded', () => {
         let clientToken;
         try {
             clientToken = await login(clientId, game.appToken);
-            updateProgress((keyIndex / totalKeys) * 10 + 10, 'Logged in successfully');
+            updateProgress((keyIndex / totalKeys) * 10, 'Logged in successfully');
         } catch (error) {
             throw new Error(`Failed to login: ${error.message}`);
         }
 
-        for (let i = 0; i < 11; i++) {
+        for (let i = 0; i < TOTAL_EVENTS; i++) {
             await sleep(EVENTS_DELAY * delayRandom());
             const hasCode = await emulateProgress(clientToken, game.promoId);
-            updateProgress((keyIndex / totalKeys) * 80 + (i + 1) * (80 / totalKeys / 11) + 10, 'Emulating progress...');
+            // Calculate progress more accurately
+            const eventProgress = (i + 1) / TOTAL_EVENTS;
+            const totalProgress = (keyIndex / totalKeys) * 80 + eventProgress * (80 / totalKeys) + 10;
+            updateProgress(totalProgress, 'Emulating progress...');
             if (hasCode) break;
         }
 
         try {
             const key = await generateKey(clientToken, game.promoId);
-            updateProgress((keyIndex + 1) / totalKeys * 80 + 20, 'Key generated successfully');
+            updateProgress((keyIndex + 1) / totalKeys * 90 + 10, 'Key generated successfully');
             return key;
         } catch (error) {
             throw new Error(`Failed to generate key: ${error.message}`);
@@ -141,6 +146,8 @@ document.addEventListener('DOMContentLoaded', () => {
         elements.generatedKeysTitle.classList.toggle('hidden', isGenerating);
         elements.formContainer.classList.toggle('hidden', isGenerating);
         elements.startBtn.disabled = isGenerating;
+        // Hide "Choose Your Game" label when generating
+        elements.gameSelectLabel.classList.toggle('label-hidden', isGenerating);
     };
 
     const copyToClipboard = (text) => {
@@ -207,4 +214,16 @@ document.addEventListener('DOMContentLoaded', () => {
             copyToClipboard(key);
         }
     });
+
+    // Dark mode toggle functionality
+    const darkModeToggle = document.getElementById('darkModeToggle');
+    darkModeToggle.addEventListener('click', () => {
+        document.body.classList.toggle('dark-mode');
+        localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
+    });
+
+    // Check for saved dark mode preference
+    if (localStorage.getItem('darkMode') === 'true') {
+        document.body.classList.add('dark-mode');
+    }
 });
