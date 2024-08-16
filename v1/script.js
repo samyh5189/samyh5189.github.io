@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     const EVENTS_DELAY = 18000;
-    const MAX_KEYS_PER_GAME_PER_DAY = 4;
+    const MAX_KEYS_PER_GAME_PER_DAY = 10;
 
     const games = {
         1: {
@@ -273,4 +273,11 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    
+    document.getElementById('creatorChannelBtn').addEventListener('click', () => {
+        window.open('https://telegram.me/Sam_Dm_bot', '_blank');
+    });
+
+    telegramChannelBtn.addEventListener('click', () => {
+        window.open('https://telegram.me/Insta_Buy_Follower', '_blank');
+    });
+});
