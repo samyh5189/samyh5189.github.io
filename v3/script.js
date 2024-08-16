@@ -1,303 +1,320 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const EVENTS_DELAY = 21000;
-    const MAX_KEYS_PER_GAME_PER_DAY = 4;
+/* Base styles */
+:root {
+    --primary-color: #4a90e2;
+    --primary-color-dark: #3a7bc8;
+    --background-color: #f4f4f4;
+    --text-color: #333;
+    --container-bg: #ffffff;
+    --border-color: #ddd;
+    --success-color: #4caf50;
+    --focus-color: rgba(74, 144, 226, 0.5);
+}
 
-    const games = {
-        1: {
-            name: 'Riding Extreme 3D',
-            appToken: 'd28721be-fd2d-4b45-869e-9f253b554e50',
-            promoId: '43e35910-c168-4634-ad4f-52fd764a843f',
-        },
-        2: {
-            name: 'Chain Cube 2048',
-            appToken: 'd1690a07-3780-4068-810f-9b5bbf2931b2',
-            promoId: 'b4170868-cef0-424f-8eb9-be0622e8e8e3',
-        },
-        3: {
-            name: 'My Clone Army',
-            appToken: '74ee0b5b-775e-4bee-974f-63e7f4d5bacb',
-            promoId: 'fe693b26-b342-4159-8808-15e3ff7f8767',
-        },
-        4: {
-            name: 'Train Miner',
-            appToken: '82647f43-3f87-402d-88dd-09a90025313f',
-            promoId: 'c4480ac7-e178-4973-8061-9ed5b2e17954',
-        },
-        5: {
-            name: 'MergeAway',
-            appToken: '8d1cc2ad-e097-4b86-90ef-7a27e19fb833',
-            promoId: 'dc128d28-c45b-411c-98ff-ac7726fbaea4',
-        },
-        6: {
-            name: 'Twerk Race 3D',
-            appToken: '61308365-9d16-4040-8bb0-2f4a4c69074c',
-            promoId: '61308365-9d16-4040-8bb0-2f4a4c69074c'
-        }
-    };
+body {
+    font-family: 'Poppins', sans-serif;
+    line-height: 1.6;
+    color: var(--text-color);
+    background-color: var(--background-color);
+    margin: 0;
+    padding: 0;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
 
-    const elements = {
-        startBtn: document.getElementById('startBtn'),
-        keyCountSelect: document.getElementById('keyCountSelect'),
-        keyCountLabel: document.getElementById('keyCountLabel'),
-        progressContainer: document.getElementById('progressContainer'),
-        progressBar: document.getElementById('progressBar'),
-        progressText: document.getElementById('progressText'),
-        progressLog: document.getElementById('progressLog'),
-        keyContainer: document.getElementById('keyContainer'),
-        keysList: document.getElementById('keysList'),
-        copyAllBtn: document.getElementById('copyAllBtn'),
-        generatedKeysTitle: document.getElementById('generatedKeysTitle'),
-        gameSelect: document.getElementById('gameSelect'),
-        copyStatus: document.getElementById('copyStatus'),
-        previousKeysContainer: document.getElementById('previousKeysContainer'),
-        previousKeysList: document.getElementById('previousKeysList'),
-        darkModeToggle: document.getElementById('darkModeToggle'),
-        gameSelectLabel: document.getElementById('gameSelectLabel')
-    };
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: var(--container-bg);
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    border-radius: 8px;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
 
-    const initializeLocalStorage = () => {
-        const now = new Date().toISOString().split('T')[0];
-        Object.values(games).forEach(game => {
-            const storageKey = `keys_generated_${game.name}`;
-            const storedData = JSON.parse(localStorage.getItem(storageKey));
-            if (!storedData || storedData.date !== now) {
-                localStorage.setItem(storageKey, JSON.stringify({ date: now, count: 0, keys: [] }));
-            }
-        });
-    };
+/* Logo styles */
+.logo-container {
+    text-align: center;
+    margin-bottom: 20px;
+}
 
-    const generateClientId = () => {
-        const timestamp = Date.now();
-        const randomNumbers = Array.from({ length: 19 }, () => Math.floor(Math.random() * 10)).join('');
-        return `${timestamp}-${randomNumbers}`;
-    };
+.logo {
+    width: 100px;
+    height: auto;
+    animation: pulse 2s infinite;
+}
 
-    const login = async (clientId, appToken) => {
-        try {
-            console.log('Attempting to login...');
-            const response = await fetch('https://api.gamepromo.io/promo/login-client', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ appToken, clientId, clientOrigin: 'deviceid' })
-            });
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
 
-            if (!response.ok) {
-                const errorText = await response.text();
-                throw new Error(`Login failed: ${response.status} ${response.statusText}. ${errorText}`);
-            }
+/* Typography */
+.main-title {
+    text-align: center;
+    color: var(--primary-color);
+    margin-bottom: 30px;
+}
 
-            const data = await response.json();
-            console.log('Login successful');
-            return data.clientToken;
-        } catch (error) {
-            console.error('Login error:', error);
-            updateProgress(0, `Login failed: ${error.message}`);
-            throw error;
-        }
-    };
+/* Form styles */
+.form-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin-bottom: 30px;
+}
 
-    const emulateProgress = async (clientToken, promoId) => {
-        try {
-            console.log('Emulating progress...');
-            const response = await fetch('https://api.gamepromo.io/promo/register-event', {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${clientToken}`,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    promoId,
-                    eventId: generateUUID(),
-                    eventOrigin: 'undefined'
-                })
-            });
+.form-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 15px;
+}
 
-            if (!response.ok) {
-                const errorText = await response.text();
-                throw new Error(`Progress emulation failed: ${response.status} ${response.statusText}. ${errorText}`);
-            }
+.label-text {
+    margin-bottom: 5px;
+    font-weight: 600;
+}
 
-            const data = await response.json();
-            console.log('Progress emulation successful');
-            return data.hasCode;
-        } catch (error) {
-            console.error('Progress emulation error:', error);
-            updateProgress(0, `Progress emulation failed: ${error.message}`);
-            return false;
-        }
-    };
+.select-style, .btn-generate, .btn-copy, .btn-generate-more {
+    padding: 10px;
+    border-radius: 4px;
+    border: 1px solid var(--border-color);
+    font-size: 16px;
+    transition: all 0.3s ease;
+}
 
-    const generateKey = async (clientToken, promoId) => {
-        try {
-            console.log('Generating key...');
-            const response = await fetch('https://api.gamepromo.io/promo/create-code', {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${clientToken}`,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ promoId })
-            });
+.select-style:focus, .key-item input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 5px var(--focus-color);
+}
 
-            if (!response.ok) {
-                const errorText = await response.text();
-                throw new Error(`Key generation failed: ${response.status} ${response.statusText}. ${errorText}`);
-            }
+/* Button styles */
+.btn-generate, .btn-copy, .btn-generate-more, .copyKeyBtn {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+}
 
-            const data = await response.json();
-            console.log('Key generated successfully');
-            return data.promoCode;
-        } catch (error) {
-            console.error('Key generation error:', error);
-            updateProgress(0, `Key generation failed: ${error.message}`);
-            throw error;
-        }
-    };
+.btn-generate:hover, .btn-copy:hover, .btn-generate-more:hover, .copyKeyBtn:hover {
+    background-color: var(--primary-color-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
 
-    const generateUUID = () => {
-        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-            const r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
-            return v.toString(16);
-        });
-    };
+.btn-generate:active, .btn-copy:active, .btn-generate-more:active, .copyKeyBtn:active {
+    transform: translateY(0);
+    box-shadow: none;
+}
 
-    const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+/* Progress bar styles */
+.progress-bar-container {
+    width: 100%;
+    height: 20px;
+    background-color: var(--border-color);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 10px;
+}
 
-    const delayRandom = () => Math.random() / 3 + 1;
+.progress-bar {
+    width: 0;
+    height: 100%;
+    background-color: var(--success-color);
+    transition: width 0.3s ease;
+}
 
-    const updateProgress = (progress, message) => {
-        elements.progressBar.style.width = `${progress}%`;
-        elements.progressText.innerText = `${progress}%`;
-        elements.progressLog.innerText = message;
-        console.log(`Progress: ${progress}% - ${message}`);
-    };
+.progress-text, .progress-log {
+    text-align: center;
+    margin-bottom: 10px;
+}
 
-    const generateKeyProcess = async (game, keyCount) => {
-        const clientId = generateClientId();
-        let clientToken;
-        try {
-            clientToken = await login(clientId, game.appToken);
-            updateProgress(10 / keyCount, 'Logged in successfully');
+/* Key list styles */
+.keys-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+}
 
-            for (let i = 0; i < 11; i++) {
-                await sleep(EVENTS_DELAY * delayRandom());
-                const hasCode = await emulateProgress(clientToken, game.promoId);
-                updateProgress((10 + i * 5) / keyCount, 'Emulating progress...');
-                if (hasCode) break;
-            }
+.key-item {
+    display: flex;
+    gap: 10px;
+}
 
-            const key = await generateKey(clientToken, game.promoId);
-            updateProgress(70 / keyCount, 'Key generated successfully');
-            return key;
-        } catch (error) {
-            console.error(`Failed to generate key: ${error.message}`);
-            return null;
-        }
-    };
+.key-item input {
+    flex-grow: 1;
+    padding: 5px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
 
-    const updateUI = (isGenerating) => {
-        elements.progressContainer.classList.toggle('hidden', !isGenerating);
-        elements.keyContainer.classList.toggle('hidden', isGenerating);
-        elements.generatedKeysTitle.classList.toggle('hidden', isGenerating);
-        elements.keyCountSelect.classList.toggle('hidden', isGenerating);
-        elements.gameSelect.classList.toggle('hidden', isGenerating);
-        elements.startBtn.classList.toggle('hidden', isGenerating);
-        elements.copyAllBtn.classList.toggle('hidden', isGenerating);
-        elements.startBtn.disabled = isGenerating;
-        elements.gameSelectLabel.classList.toggle('hidden', isGenerating);
-    };
+/* Video container styles */
+.video-container {
+    margin-top: 30px;
+    width: 100%;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
 
-    const copyToClipboard = (text) => {
-        navigator.clipboard.writeText(text).then(() => {
-            elements.copyStatus.innerText = 'Copied!';
-            elements.copyStatus.classList.remove('hidden');
-            setTimeout(() => {
-                elements.copyStatus.classList.add('hidden');
-            }, 2000);
-        }).catch(err => {
-            console.error('Could not copy text: ', err);
-        });
-    };
+.video-wrapper {
+    position: relative;
+    width: 100%;
+    padding-bottom: 56.25%; /* 16:9 aspect ratio */
+    height: 0;
+    overflow: hidden;
+}
 
-    const displayKeys = (keys) => {
-        elements.keysList.innerHTML = keys.map(key => 
-            `<div class="key-item">
-                <input type="text" value="${key}" readonly>
-                <button class="copyKeyBtn" data-key="${key}">Copy Key</button>
-            </div>`
-        ).join('');
+.video-wrapper iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
 
-        if (keys.length > 1) {
-            elements.copyAllBtn.classList.remove('hidden');
-        }
+/* Footer styles */
+.footer {
+    text-align: center;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border-color);
+}
 
-        document.querySelectorAll('.copyKeyBtn').forEach(button => {
-            button.addEventListener('click', (event) => {
-                const key = event.target.getAttribute('data-key');
-                copyToClipboard(key);
-            });
-        });
-    };
+/* Utility classes */
+.hidden {
+    display: none;
+}
 
-    const handleStartButtonClick = async () => {
-        const gameChoice = parseInt(elements.gameSelect.value);
-        const keyCount = parseInt(elements.keyCountSelect.value);
-        const game = games[gameChoice];
+.copy-status {
+    text-align: center;
+    color: var(--success-color);
+    margin-top: 10px;
+}
 
-        const storageKey = `keys_generated_${game.name}`;
-        const storedData = JSON.parse(localStorage.getItem(storageKey));
+/* Dark mode styles */
+body.dark-mode {
+    --background-color: #1a1a1a;
+    --text-color: #f0f0f0;
+    --container-bg: #2a2a2a;
+    --primary-color: #60a5fa;
+    --primary-color-dark: #3b82f6;
+    --border-color: #4a4a4a;
+    --focus-color: rgba(96, 165, 250, 0.5);
+}
 
-        if (storedData.count + keyCount > MAX_KEYS_PER_GAME_PER_DAY) {
-            alert(`You can generate only ${MAX_KEYS_PER_GAME_PER_DAY - storedData.count} more keys for ${game.name} today.`);
-            elements.previousKeysList.innerHTML = storedData.keys.map(key =>
-                `<div class="key-item">
-                    <input type="text" value="${key}" readonly>
-                </div>`
-            ).join('');
-            elements.previousKeysContainer.classList.remove('hidden');
-            return;
-        }
+body.dark-mode .container {
+    box-shadow: 0 0 10px rgba(255,255,255,0.1);
+}
 
-        elements.keyCountLabel.innerText = `Number of keys: ${keyCount}`;
-        updateUI(true);
-        updateProgress(0, 'Starting... \nPlease wait. It may take up to 1 min to login');
+body.dark-mode .select-style,
+body.dark-mode .key-item input {
+    background-color: #3a3a3a;
+}
 
-        try {
-            const keys = await Promise.all(Array.from({ length: keyCount }, () => generateKeyProcess(game, keyCount)));
-            const validKeys = keys.filter(Boolean);
-            if (validKeys.length > 0) {
-                displayKeys(validKeys);
-                storedData.count += validKeys.length;
-                storedData.keys.push(...validKeys);
-                localStorage.setItem(storageKey, JSON.stringify(storedData));
-            } else {
-                throw new Error('No valid keys were generated');
-            }
-        } catch (error) {
-            console.error('Key generation failed:', error);
-            alert(`Key generation failed: ${error.message}`);
-        } finally {
-            updateUI(false);
-        }
-    };
+/* Dark mode toggle button */
+.dark-mode-toggle {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    z-index: 1000;
+}
 
-    elements.startBtn.addEventListener('click', handleStartButtonClick);
+.dark-mode-toggle svg {
+    width: 24px;
+    height: 24px;
+    color: var(--primary-color);
+    transition: color 0.3s ease;
+}
 
-    elements.copyAllBtn.addEventListener('click', () => {
-        const allKeys = Array.from(document.querySelectorAll('.key-item input')).map(input => input.value).join('\n');
-        copyToClipboard(allKeys);
-    });
+body.dark-mode .dark-mode-toggle svg {
+    color: var(--primary-color);
+}
 
-    // Dark mode toggle functionality
-    elements.darkModeToggle.addEventListener('click', () => {
-        document.body.classList.toggle('dark-mode');
-        localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
-    });
+/* Custom scrollbar */
+::-webkit-scrollbar {
+    width: 10px;
+}
 
-    // Check for saved dark mode preference
-    if (localStorage.getItem('darkMode') === 'true') {
-        document.body.classList.add('dark-mode');
+::-webkit-scrollbar-track {
+    background: var(--background-color);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--text-color);
+}
+
+/* Responsive design */
+@media (max-width: 600px) {
+    .container {
+        padding: 15px;
     }
 
-    initializeLocalStorage();
-});
+    .main-title {
+        font-size: 24px;
+    }
+
+    .form-group,
+    .key-item {
+        flex-direction: column;
+    }
+
+    .select-style,
+    .btn-generate,
+    .btn-copy,
+    .btn-generate-more,
+    .key-item input,
+    .copyKeyBtn {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+    .video-container {
+        width: 100%;
+        padding: 0 15px;
+        box-sizing: border-box;
+    }
+
+    .video-wrapper {
+        padding-bottom: 75%; /* 4:3 aspect ratio for smaller screens */
+    }
+}
+
+@media (max-width: 400px) {
+    .main-title {
+        font-size: 20px;
+    }
+
+    .logo {
+        width: 80px;
+    }
+
+    .btn-generate, .btn-copy, .btn-generate-more, .copyKeyBtn {
+        font-size: 14px;
+    }
+}
+
+/* Accessibility improvements */
+.btn-generate:focus,
+.btn-copy:focus,
+.btn-generate-more:focus,
+.copyKeyBtn:focus,
+.select-style:focus {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+}
