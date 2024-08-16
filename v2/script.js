@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     const EVENTS_DELAY = 18000;
-    const MAX_KEYS_PER_GAME_PER_DAY = 4;
+    const MAX_KEYS_PER_GAME_PER_DAY = 1000;
 
     const games = {
         1: { name: 'Riding Extreme 3D', appToken: 'd28721be-fd2d-4b45-869e-9f253b554e50', promoId: '43e35910-c168-4634-ad4f-52fd764a843f' },
@@ -104,15 +104,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const updateProgress = (progress, message) => {
         elements.progressBar.style.width = `${progress}%`;
-        elements.progressText.innerText = `${progress}%`;
+        elements.progressText.innerText = `${Math.round(progress)}%`;
         elements.progressLog.innerText = message;
     };
 
-    const generateKeyProcess = async (game) => {
+    const generateKeyProcess = async (game, keyIndex, totalKeys) => {
         const clientId = generateClientId();
         let clientToken;
         try {
             clientToken = await login(clientId, game.appToken);
+            updateProgress((keyIndex / totalKeys) * 20, 'Logged in successfully');
         } catch (error) {
             throw new Error(`Failed to login: ${error.message}`);
         }
@@ -120,11 +121,14 @@ document.addEventListener('DOMContentLoaded', () => {
         for (let i = 0; i < 11; i++) {
             await sleep(EVENTS_DELAY * delayRandom());
             const hasCode = await emulateProgress(clientToken, game.promoId);
+            updateProgress((keyIndex / totalKeys) * 20 + (i + 1) * (60 / totalKeys / 11), 'Emulating progress...');
             if (hasCode) break;
         }
 
         try {
-            return await generateKey(clientToken, game.promoId);
+            const key = await generateKey(clientToken, game.promoId);
+            updateProgress((keyIndex + 1) / totalKeys * 100, 'Key generated successfully');
+            return key;
         } catch (error) {
             throw new Error(`Failed to generate key: ${error.message}`);
         }
@@ -173,7 +177,7 @@ document.addEventListener('DOMContentLoaded', () => {
         updateProgress(0, 'Starting... Please wait. It may take up to 1 min to Login');
 
         try {
-            const keys = await Promise.all(Array.from({ length: keyCount }, () => generateKeyProcess(game)));
+            const keys = await Promise.all(Array.from({ length: keyCount }, (_, i) => generateKeyProcess(game, i, keyCount)));
             elements.keysList.innerHTML = keys.map(key =>
                 `<div class="key-item">
                     <input type="text" value="${key}" readonly>
