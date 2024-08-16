@@ -3,40 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Samyh</title>
+    <title>Samyh Key Generator</title>
     <link rel="stylesheet" href="styles.css">
-    <style>
-        @keyframes gradientShift {
-            0% { stop-color: #1a73e8; }
-            50% { stop-color: #ff7e5f; }
-            100% { stop-color: #1a73e8; }
-        }
-        .logo-gradient stop {
-            animation: gradientShift 8s infinite;
-        }
-    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="container">
         <div class="logo-container">
-            <svg width="100" height="100" viewBox="0 0 100 100" fill="none" xmlns="http://samyh5189.github.io/v2/s.svg">
-                <defs>
-                    <linearGradient id="logo-gradient" x1="0%" y1="0%" x2="100%" y2="100%" class="logo-gradient">
-                        <stop offset="0%" stop-color="#1a73e8" />
-                        <stop offset="100%" stop-color="#ff7e5f" />
-                    </linearGradient>
-                </defs>
-                <path d="M30 20C30 20 70 20 70 50C70 80 30 80 30 80" stroke="url(#logo-gradient)" stroke-width="12" stroke-linecap="round" stroke-linejoin="round">
-                    <animate attributeName="d" dur="1s" repeatCount="1"
-                        values="M30 20C30 20 70 20 70 50C70 80 30 80 30 80;
-                                M30 20C30 20 70 20 70 50C70 80 30 80 30 80"
-                        fill="freeze" />
-                </path>
-            </svg>
+            <img src="https://samyh5189.github.io/v2/s.svg" alt="Samyh Logo" class="logo">
         </div>
+        <h1 class="main-title">Samyh Key Generator</h1>
         <div class="form-group">
-            <label for="gameSelect">Select Game</label>
-            <select id="gameSelect">
+            <label for="gameSelect" class="label-text">Choose Your Game</label>
+            <select id="gameSelect" class="select-style">
                 <option value="1">Riding Extreme 3D</option>
                 <option value="2">Chain Cube 2048</option>
                 <option value="3">My Clone Army</option>
@@ -46,39 +25,39 @@
             </select>
         </div>
         <div class="form-group">
-            <label id="keyCountLabel" for="keyCountSelect">Number of keys:</label>
-            <select id="keyCountSelect">
+            <label id="keyCountLabel" for="keyCountSelect" class="label-text">Number of Keys</label>
+            <select id="keyCountSelect" class="select-style">
                 <option value="1">1</option>
                 <option value="2">2</option>
                 <option value="3">3</option>
                 <option value="4">4</option>
             </select>
         </div>
-        <button id="startBtn">Generate Keys</button>
+        <button id="startBtn" class="btn-generate">Generate Keys</button>
         <div id="progressContainer" class="hidden">
             <div class="progress-bar">
                 <div id="progressBar"></div>
             </div>
-            <div id="progressText">0%</div>
-            <div id="progressLog">Miulheny Thikamaa...</div>
+            <div id="progressText" class="progress-text">0%</div>
+            <div id="progressLog" class="progress-log">Initializing...</div>
         </div>
         <div id="keyContainer" class="hidden">
-            <h3 id="generatedKeysTitle" class="hidden">Generated Keys:</h3>
-            <div id="keysList"></div>
-            <button id="copyAllBtn" class="hidden">Copy All Keys</button>
-            <div id="copyStatus" class="hidden">Copied!</div>
-            <button id="generateMoreBtn">Generate More Keys</button>
+            <h3 id="generatedKeysTitle" class="generated-keys-title hidden">Your Generated Keys:</h3>
+            <div id="keysList" class="keys-list"></div>
+            <button id="copyAllBtn" class="btn-copy hidden">Copy All Keys</button>
+            <div id="copyStatus" class="copy-status hidden">Copied!</div>
+            <button id="generateMoreBtn" class="btn-generate-more">Generate More Keys</button>
         </div>
         <div id="previousKeysContainer" class="hidden">
-            <h3>Previously Generated Keys:</h3>
-            <div id="previousKeysList"></div>
+            <h3 class="previous-keys-title">Previously Generated Keys:</h3>
+            <div id="previousKeysList" class="previous-keys-list"></div>
         </div>
         <div class="video-container">
-            <h2>Watch This Video</h2>
+            <h2 class="video-title">Watch This Tutorial</h2>
             <iframe width="98%" height="315" src="https://www.youtube.com/embed/9bZkp7q19f0" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
         </div>
         <div class="footer">
-            <p>© Mohamed Samyh</p>
+            <p class="footer-text">© 2024 Mohamed Samyh | All Rights Reserved</p>
         </div>
     </div>
     <script src="script.js"></script>
