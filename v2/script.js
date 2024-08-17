@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     const EVENTS_DELAY = 21000;
-    const MAX_KEYS_PER_GAME_PER_DAY = 10000;
+    const MAX_KEYS_PER_GAME_PER_DAY = 1;
 
     const games = {
         1: {
@@ -52,7 +52,12 @@ document.addEventListener('DOMContentLoaded', () => {
         previousKeysContainer: document.getElementById('previousKeysContainer'),
         previousKeysList: document.getElementById('previousKeysList'),
         darkModeToggle: document.getElementById('darkModeToggle'),
-        gameSelectLabel: document.getElementById('gameSelectLabel')
+        gameSelectLabel: document.getElementById('gameSelectLabel'),
+        generateMoreBtn: document.getElementById('generateMoreBtn'),
+        downloadQRBtn: document.getElementById('downloadQRBtn'),
+        statsContainer: document.getElementById('statsContainer'),
+        statsContent: document.getElementById('statsContent'),
+        copyPreviousKeysBtn: document.getElementById('copyPreviousKeysBtn'),
     };
 
     const initializeLocalStorage = () => {
@@ -194,6 +199,7 @@ document.addEventListener('DOMContentLoaded', () => {
         elements.copyAllBtn.classList.toggle('hidden', isGenerating);
         elements.startBtn.disabled = isGenerating;
         elements.gameSelectLabel.classList.toggle('hidden', isGenerating);
+        elements.downloadQRBtn.classList.toggle('hidden', isGenerating);
     };
 
     const copyToClipboard = (text) => {
@@ -208,19 +214,91 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
-    const displayKeys = (keys) => {
+     const displayKeys = (keys) => {
         elements.keysList.innerHTML = keys.map(key => 
             `<div class="key-item">
                 <input type="text" value="${key}" readonly>
                 <button class="copyKeyBtn" data-key="${key}">Copy Key</button>
+                <div class="qr-code" id="qr-${key}"></div>
             </div>`
         ).join('');
 
+        keys.forEach(key => {
+            const qr = qrcode(0, 'L');
+            qr.addData(key);
+            qr.make();
+            document.getElementById(`qr-${key}`).innerHTML = qr.createSvgTag({ cellSize: 4, margin: 4 });
+        });
+
         if (keys.length > 1) {
             elements.copyAllBtn.classList.remove('hidden');
+            elements.downloadQRBtn.classList.remove('hidden');
         }
 
         document.querySelectorAll('.copyKeyBtn').forEach(button => {
+            button.addEventListener('click', (event) => {
+                const key = event.target.getAttribute('data-key');
+                copyToClipboard(key);
+            });
+        });
+    };
+
+    const downloadQRCodes = () => {
+        const zip = new JSZip();
+        const keys = Array.from(document.querySelectorAll('.key-item input')).map(input => input.value);
+        
+        keys.forEach(key => {
+            const qrSvg = document.getElementById(`qr-${key}`).innerHTML;
+            zip.file(`${key}.svg`, qrSvg);
+        });
+        
+        zip.generateAsync({type:"blob"}).then(function(content) {
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(content);
+            link.download = 'qr_codes.zip';
+            link.click();
+        });
+    };
+
+    const updateStats = () => {
+        const stats = Object.values(games).map(game => {
+            const storageKey = `keys_generated_${game.name}`;
+            const storedData = JSON.parse(localStorage.getItem(storageKey));
+            return {
+                name: game.name,
+                count: storedData ? storedData.count : 0
+            };
+        });
+
+        elements.statsContent.innerHTML = `
+            <table>
+                <tr>
+                    <th>Game</th>
+                    <th>Keys Generated Today</th>
+                </tr>
+                ${stats.map(stat => `
+                    <tr>
+                        <td>${stat.name}</td>
+                        <td>${stat.count}</td>
+                    </tr>
+                `).join('')}
+            </table>
+        `;
+
+        elements.statsContainer.classList.remove('hidden');
+    };
+
+    const displayPreviousKeys = (keys) => {
+        elements.previousKeysList.innerHTML = keys.map(key =>
+            `<div class="key-item">
+                <input type="text" value="${key}" readonly>
+                <button class="copyKeyBtn" data-key="${key}">Copy</button>
+            </div>`
+        ).join('');
+
+        elements.previousKeysContainer.classList.remove('hidden');
+
+        document.querySelectorAll('#previousKeysList .copyKeyBtn').forEach(button => {
             button.addEventListener('click', (event) => {
                 const key = event.target.getAttribute('data-key');
                 copyToClipboard(key);
@@ -238,27 +316,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (storedData.count + keyCount > MAX_KEYS_PER_GAME_PER_DAY) {
             alert(`You can generate only ${MAX_KEYS_PER_GAME_PER_DAY - storedData.count} more keys for ${game.name} today.`);
-            elements.previousKeysList.innerHTML = storedData.keys.map(key =>
-                `<div class="key-item">
-                    <input type="text" value="${key}" readonly>
-                </div>`
-            ).join('');
-            elements.previousKeysContainer.classList.remove('hidden');
+            displayPreviousKeys(storedData.keys);
             return;
         }
 
         elements.keyCountLabel.innerText = `Number of keys: ${keyCount}`;
 
         progress = 0;
-        updateProgress(0, 'Starting... \nPlease wait It may take upto 1 min to Login');
+        updateProgress(0, 'Starting... \nPlease wait It may take up to 1 min to Login');
         updateUI(true);
 
         const keys = await Promise.all(Array.from({ length: keyCount }, () => generateKeyProcess(game, keyCount)));
 
-        if (keys.length > 1) {
+        if (keys.length > 0) {
             displayKeys(keys.filter(key => key));
-        } else if (keys.length === 1 && keys[0]) {
-            displayKeys([keys[0]]);
         }
 
         storedData.count += keys.filter(key => key).length;
@@ -266,6 +337,7 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.setItem(storageKey, JSON.stringify(storedData));
 
         updateUI(false);
+        updateStats();
     });
 
     elements.copyAllBtn.addEventListener('click', () => {
@@ -273,16 +345,37 @@ document.addEventListener('DOMContentLoaded', () => {
         copyToClipboard(allKeys);
     });
 
-    // Dark mode toggle functionality
+    elements.downloadQRBtn.addEventListener('click', downloadQRCodes);
+
+    elements.generateMoreBtn.addEventListener('click', () => {
+        elements.keyContainer.classList.add('hidden');
+        elements.formContainer.classList.remove('hidden');
+        elements.startBtn.classList.remove('hidden');
+    });
+
     elements.darkModeToggle.addEventListener('click', () => {
         document.body.classList.toggle('dark-mode');
         localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
     });
 
-    // Check for saved dark mode preference
+    elements.copyPreviousKeysBtn.addEventListener('click', () => {
+        const gameChoice = parseInt(elements.gameSelect.value);
+        const game = games[gameChoice];
+        const storageKey = `keys_generated_${game.name}`;
+        const storedData = JSON.parse(localStorage.getItem(storageKey));
+
+        if (storedData && storedData.keys.length > 0) {
+            const allKeys = storedData.keys.join('\n');
+            copyToClipboard(allKeys);
+        } else {
+            alert('No previous keys to copy.');
+        }
+    });
+
     if (localStorage.getItem('darkMode') === 'true') {
         document.body.classList.add('dark-mode');
     }
 
     initializeLocalStorage();
+    updateStats();
 });
