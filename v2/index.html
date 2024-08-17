@@ -3,9 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Samyh's Key Generator</title>
+    <title>Hamster  Key Generator</title>
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.7.1/jszip.min.js"></script>
 </head>
 <body>
     <div class="container">
@@ -21,7 +23,7 @@
                 <text x="50" y="62" font-family="Arial, sans-serif" font-size="40" font-weight="bold" text-anchor="middle" fill="white">🐹</text>
             </svg>
         </div>
-        <h1 class="main-title">Samyh's Key Generator</h1>
+        <h1 class="main-title">Hamster Key Generator</h1>
         <div id="formContainer" class="form-container">
             <div class="form-group">
                 <label for="gameSelect" class="label-text" id="gameSelectLabel">Choose Your Game</label>
@@ -30,8 +32,8 @@
                     <option value="2">Chain Cube 2048</option>
                     <option value="3">My Clone Army</option>
                     <option value="4">Train Miner</option>
-                    <option value="5">MergeAway (NEW)</option>
-                    <option value="6">Twerk Race (NEW)</option>
+                    <option value="5">MergeAway</option>
+                    <option value="6">Twerk Race 3D</option>
                 </select>
             </div>
             <div class="form-group">
@@ -58,10 +60,16 @@
             <button id="copyAllBtn" class="btn-copy hidden">Copy All Keys</button>
             <div id="copyStatus" class="copy-status hidden">Copied!</div>
             <button id="generateMoreBtn" class="btn-generate-more">Generate More Keys</button>
+            <button id="downloadQRBtn" class="btn-download hidden">Download QR Codes</button>
         </div>
         <div id="previousKeysContainer" class="hidden">
             <h3 class="previous-keys-title">Previously Generated Keys:</h3>
             <div id="previousKeysList" class="previous-keys-list"></div>
+            <button id="copyPreviousKeysBtn" class="btn-copy">Copy All Previous Keys</button>
+        </div>
+        <div id="statsContainer" class="hidden">
+            <h3 class="stats-title">Key Generation Statistics</h3>
+            <div id="statsContent" class="stats-content"></div>
         </div>
         <div class="video-container">
             <div class="video-wrapper">
