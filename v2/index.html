@@ -10,7 +10,14 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.7.1/jszip.min.js"></script>
 </head>
 <body>
-                        </linearGradient>
+    <div class="container">
+        <div class="logo-container">
+            <svg class="logo" width="10" height="10" viewBox="0 0 10 10">
+                <defs>
+                    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color:#4a90e2;stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:#50e3c2;stop-opacity:1" />
+                    </linearGradient>
                 </defs>
                 <path d="M20,80 Q50,20 80,80 T20,80" fill="url(#grad)" />
                 <text x="50" y="62" font-family="Arial, sans-serif" font-size="50" font-weight="bold" text-anchor="middle" fill="white">🐹</text>
@@ -66,7 +73,7 @@
             <div class="video-wrapper">
                 <iframe src="https://www.youtube.com/embed/9bZkp7q19f0" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
             </div>
-        <div id="statsContainer" class="hidden">
+                    <div id="statsContainer" class="hidden">
             <h3 class="stats-title">Key Generation Statistics</h3>
             <div id="statsContent" class="stats-content"></div>
         </div>
