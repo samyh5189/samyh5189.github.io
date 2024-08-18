@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     
-    const MAX_KEYS_PER_GAME_PER_DAY = 100000;
-    const EVENTS_DELAY = 70000;
+    const MAX_KEYS_PER_GAME_PER_DAY = 100000000;
+    //const EVENTS_DELAY = 20000;
 
     const games = {
         1: {
@@ -212,10 +212,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 return null;
             }
 
-            for (let i = 0; i < 11; i++) {
-                await sleep(EVENTS_DELAY * delayRandom());
+            for (let i = 0; i < game.attemptsNumber ; i++) {
+                await sleep(game.eventsDelay * delayRandom());
                 const hasCode = await emulateProgress(clientToken, game.promoId);
-                updateProgress(7 / keyCount, 'Emulating progress...');
+                updateProgress(((100 / game.attemptsNumber) / keyCount), 'Emulating progress...');
                 if (hasCode) {
                     break;
                 }
@@ -294,4 +294,34 @@ document.addEventListener('DOMContentLoaded', () => {
     telegramChannelBtn.addEventListener('click', () => {
         window.open('https://telegram.me/Insta_Buy_Follower', '_blank');
     });
+
+    document.getElementById('ShowKeysBtn').addEventListener('click', () => {
+        const generatedCodesContainer = document.getElementById('generatedCodesContainer');
+        const generatedCodesList = document.getElementById('generatedCodesList');
+        generatedCodesList.innerHTML = ''; // Clear the list
+
+        let codesGeneratedToday = [];
+
+        Object.keys(games).forEach(key => {
+            const game = games[key];
+            const storageKey = `keys_generated_${game.name}`;
+            const storedData = JSON.parse(localStorage.getItem(storageKey));
+
+            if (storedData && storedData.keys && storedData.keys.length > 0) {
+                codesGeneratedToday = codesGeneratedToday.concat(storedData.keys.map(code => {
+                    return `<li>${game.name}: ${code}</li>`;
+                }));
+            }
+        });
+
+        if (codesGeneratedToday.length > 0) {
+            generatedCodesList.innerHTML = codesGeneratedToday.join('');
+        } else {
+            generatedCodesList.innerHTML = '<li>No codes generated today.</li>';
+        }
+
+        generatedCodesContainer.style.display = 'block';
+    });
+
+    
 });
