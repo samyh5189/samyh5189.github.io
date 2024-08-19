@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     
-    const MAX_KEYS_PER_GAME_PER_DAY = 100000000;
+    const MAX_KEYS_PER_GAME_PER_DAY = 10;
     //const EVENTS_DELAY = 20000;
 
     const games = {
@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
             name: 'Riding Extreme 3D',
             appToken: 'd28721be-fd2d-4b45-869e-9f253b554e50',
             promoId: '43e35910-c168-4634-ad4f-52fd764a843f',
-            eventsDelay: 22000,
+            eventsDelay: 21000,
             attemptsNumber: 22,
         },
         2: {
@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
             name: 'My Clone Army',
             appToken: '74ee0b5b-775e-4bee-974f-63e7f4d5bacb',
             promoId: 'fe693b26-b342-4159-8808-15e3ff7f8767',
-            eventsDelay: 70000,
+            eventsDelay: 120000,
             attemptsNumber: 11,
         },
         4: {
@@ -40,14 +40,15 @@ document.addEventListener('DOMContentLoaded', () => {
             attemptsNumber: 10,
         },
         6: {
-    name: 'Twerk Race 3D',
-    appToken: '61308365-9d16-4040-8bb0-2f4a4c69074c',
-    promoId: '61308365-9d16-4040-8bb0-2f4a4c69074c',
+            name: 'Twerk Race 3D',
+            appToken: '61308365-9d16-4040-8bb0-2f4a4c69074c',
+            promoId: '61308365-9d16-4040-8bb0-2f4a4c69074c',
             eventsDelay: 20000,
-        attemptsNumber: 10,
+            attemptsNumber: 10,
             
         }
     };
+
 
     const startBtn = document.getElementById('startBtn');
     const keyCountSelect = document.getElementById('keyCountSelect');
@@ -200,6 +201,7 @@ document.addEventListener('DOMContentLoaded', () => {
             progressText.innerText = `${progress}%`;
             progressLog.innerText = message;
         };
+    
 
         const generateKeyProcess = async () => {
             const clientId = generateClientId();
@@ -229,6 +231,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 alert(`Failed to generate key: ${error.message}`);
                 return null;
             }
+    
         };
 
         const keys = await Promise.all(Array.from({ length: keyCount }, generateKeyProcess));
