@@ -21,16 +21,14 @@
 
             </select>
         </div>
-        <div id="countdownContainer">
-    <p>Event will start in: <span id="countdownTimer"></span> seconds</p>
-        </div>
+        
         <div class="form-group">
             <label id="keyCountLabel" for="keyCountSelect">Number of keys:</label>
             <select id="keyCountSelect">
                 <option value="10">10</option>
                 <option value="20">20</option>
                 <option value="30">30</option>
-                <option value="4">4</option>
+                <option value="40">40</option>
                 <option value="80">80</option>
                 
             </select>
@@ -42,6 +40,9 @@
             </div>
             <div id="progressText">0%</div>
             <div id="progressLog">Starting...</div>
+            <div id="countdownContainer">
+            <p>Next Step will start in: <span id="countdownTimer"></span> seconds </p>
+            </div>
         </div>
         <div id="keyContainer" class="hidden">
             <h3 id="generatedKeysTitle" class="hidden">Generated Keys:</h3>
@@ -52,8 +53,8 @@
         </div>
         <div class="mycodes">
             <p>
-                The Key Generation may take upto 7-10 mins<br>
-                So do Kindly wait - If you feel the Key Generation is not working then <a href="https://telegram.me/Insta_Buy_Follower">Contact Creator</a>
+                The Key Generation may take upto 10 mins<br>
+                If you feel its not working then <a href="https://telegram.me/Insta_Buy_Follower">Contact Creator</a>
             </p>
             <button id="ShowKeysBtn">My Codes</button>
             <div id="generatedCodesContainer" style="display:none;">
@@ -63,9 +64,10 @@
 
         </div>
         <div class="footer">
-            <p>Disclaimer: This tool is for educational purposes only. Use responsibly.</p>
-            <button id="creatorChannelBtn">Contact Creator 🤖</button> <br><br>
-            <button id="telegramChannelBtn">Check out Our Telegram Channel 🆔</button>
+            <p>Disclaimer: This tool is for educational purposes only. Use responsibly.
+            <button id="telegramChannelBtn">Check out Our Telegram Channel 🆔</button></p>
+            <button id="creatorChannelBtn">Contact Creator 🤖</button> 
+            
         </div>
     </div>
     <script src="script.js"></script>
