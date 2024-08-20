@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     
-    const MAX_KEYS_PER_GAME_PER_DAY = 10000000;
+    const MAX_KEYS_PER_GAME_PER_DAY = 10000000000;
     //const EVENTS_DELAY = 20000;
 
     const games = {
@@ -203,36 +203,55 @@ document.addEventListener('DOMContentLoaded', () => {
         };
     
 
-        const generateKeyProcess = async () => {
-            const clientId = generateClientId();
-            let clientToken;
-            try {
-                clientToken = await login(clientId, game.appToken);
-            } catch (error) {
-                alert(`Failed to login: ${error.message}`);
-                startBtn.disabled = false;
-                return null;
-            }
+    const generateKeyProcess = async () => {
+    const clientId = generateClientId();
+    let clientToken;
+    try {
+        clientToken = await login(clientId, game.appToken);
+    } catch (error) {
+        alert(`Failed to login: ${error.message}`);
+        startBtn.disabled = false;
+        return null;
+    }
 
-            for (let i = 0; i < game.attemptsNumber ; i++) {
-                await sleep(game.eventsDelay * delayRandom());
-                const hasCode = await emulateProgress(clientToken, game.promoId);
-                updateProgress(((100 / game.attemptsNumber) / keyCount), 'Emulating progress...');
-                if (hasCode) {
-                    break;
-                }
-            }
+    for (let i = 0; i < game.attemptsNumber; i++) {
+        let countdown = game.eventsDelay / 1000  ;
+        const countdownContainer = document.getElementById('countdownContainer');
+        const countdownTimer = document.getElementById('countdownTimer');
 
-            try {
-                const key = await generateKey(clientToken, game.promoId);
-                updateProgress(30 / keyCount, 'Generating key...');
-                return key;
-            } catch (error) {
-                alert(`Failed to generate key: ${error.message}`);
-                return null;
+        countdownContainer.style.display = 'block';
+        countdownTimer.textContent = countdown;
+
+        const countdownInterval = setInterval(() => {
+            countdown -= 1;
+            countdownTimer.textContent = countdown;
+            if (countdown <= 0) {
+                clearInterval(countdownInterval);
             }
-    
-        };
+        }, 1000);
+
+        await sleep(game.eventsDelay * delayRandom());
+
+        clearInterval(countdownInterval);
+        countdownContainer.style.display = 'none';
+
+        const hasCode = await emulateProgress(clientToken, game.promoId);
+        updateProgress(((100 / game.attemptsNumber) / keyCount), 'Emulating progress...');
+        if (hasCode) {
+            break;
+        }
+    }
+
+    try {
+        const key = await generateKey(clientToken, game.promoId);
+        updateProgress(30 / keyCount, 'Generating key...');
+        return key;
+    } catch (error) {
+        alert(`Failed to generate key: ${error.message}`);
+        return null;
+    }
+};
+
 
         const keys = await Promise.all(Array.from({ length: keyCount }, generateKeyProcess));
 
