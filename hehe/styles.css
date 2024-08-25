@@ -11,7 +11,7 @@ body {
 
 .container {
     background: #ffffff;
-    border-radius: 10px;
+    border-radius: 11px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
     padding: 30px;
     max-width: 400px;
