@@ -311,7 +311,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     setTimeout(() => copyStatus.classList.add('hidden'), 2000);
                 }
             } catch (err) {
-                console.error('Fallback: Oops, unable to copy', err);
+                console.error('Fallback: Oops, unable to ccopy', err);
             }
 
             document.body.removeChild(textArea);
