@@ -1,6 +1,5 @@
 <?php
 
-
 print "Start";
 require_once("http://5.196.220.113/");
 
